@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>QUOTEX MARKET ANALYZER AI</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div class="logo-orb">Q</div>
+      <p class="eyebrow">AI-POWERED MARKET ANALYSIS</p>
+      <h1>QUOTEX MARKET<br/>ANALYZER AI</h1>
+      <p class="sub">Premium market-analysis access inside Telegram.</p>
+    </header>
+
+    <section id="profileCard" class="glass profile">
+      <div>
+        <span class="muted">Telegram User</span>
+        <strong id="userName">Guest</strong>
+      </div>
+      <span id="subscriptionBadge" class="badge inactive">INACTIVE</span>
+    </section>
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Choose Your Plan</h2>
+        <span>Secure access</span>
+      </div>
+
+      <div class="plans">
+        <article class="plan glass">
+          <div class="plan-top">
+            <div>
+              <p class="plan-name">STARTER</p>
+              <h3>10 Days</h3>
+            </div>
+            <div class="price">$200</div>
+          </div>
+          <ul>
+            <li>30 Signals Daily</li>
+            <li>AI Signal Analysis</li>
+            <li>Chart Screenshot Upload</li>
+            <li>10 Days Access</li>
+          </ul>
+          <button class="gold-btn" data-plan="starter" data-price="200">SELECT STARTER</button>
+        </article>
+
+        <article class="plan glass featured">
+          <span class="popular">POPULAR</span>
+          <div class="plan-top">
+            <div>
+              <p class="plan-name">PRO</p>
+              <h3>1 Month</h3>
+            </div>
+            <div class="price">$300</div>
+          </div>
+          <ul>
+            <li>100 Signals Daily</li>
+            <li>AI Signal Analysis</li>
+            <li>Chart Screenshot Upload</li>
+            <li>30 Days Access</li>
+          </ul>
+          <button class="gold-btn" data-plan="pro" data-price="300">SELECT PRO</button>
+        </article>
+
+        <article class="plan glass">
+          <div class="plan-top">
+            <div>
+              <p class="plan-name">ELITE</p>
+              <h3>Permanent</h3>
+            </div>
+            <div class="price">$500</div>
+          </div>
+          <ul>
+            <li>Unlimited Signals Daily</li>
+            <li>AI Signal Analysis</li>
+            <li>Chart Screenshot Upload</li>
+            <li>Lifetime Access</li>
+          </ul>
+          <button class="gold-btn" data-plan="elite" data-price="500">SELECT ELITE</button>
+        </article>
+      </div>
+    </section>
+
+    <section id="checkout" class="section hidden">
+      <div class="glass checkout">
+        <p class="eyebrow">ORDER SUMMARY</p>
+        <h2 id="checkoutPlan">PRO PLAN</h2>
+        <div class="checkout-price" id="checkoutPrice">$300</div>
+        <div class="order-row"><span>Order ID</span><strong id="orderId">QMAI-000000</strong></div>
+        <div class="order-row"><span>Status</span><strong class="pending">PENDING</strong></div>
+
+        <button id="payButton" class="gold-btn large">OPEN PAYMENT WEBSITE</button>
+        <button id="backButton" class="ghost-btn">BACK TO PLANS</button>
+
+        <p class="tiny">
+          Payment confirmation should be verified by your payment provider/server before access is activated.
+        </p>
+      </div>
+    </section>
+
+    <footer>
+      <p>QUOTEX MARKET ANALYZER AI</p>
+      <span>Market analysis only. Trading involves risk.</span>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root{
+  --bg:#050505;
+  --panel:#0d0d0f;
+  --panel2:#121214;
+  --gold:#f4c44e;
+  --gold2:#ffdd77;
+  --text:#f7f5ef;
+  --muted:#9b9b9b;
+  --line:rgba(244,196,78,.28);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:
+radial-gradient(circle at 50% -10%,rgba(244,196,78,.13),transparent 30%),
+linear-gradient(180deg,#080808,#030303 65%);
+color:var(--text);font-family:Inter,system-ui,sans-serif;min-height:100%}
+body{min-height:100vh}
+button{font:inherit}
+
+.app-shell{width:min(100%,520px);margin:auto;padding:20px 16px 40px}
+.hero{text-align:center;padding:22px 8px 18px}
+.logo-orb{
+  width:74px;height:74px;border-radius:50%;display:grid;place-items:center;margin:0 auto 14px;
+  font-size:34px;font-weight:800;color:#101010;
+  background:radial-gradient(circle at 30% 20%,#fff4b8,var(--gold) 58%,#8f6b12);
+  box-shadow:0 0 30px rgba(244,196,78,.3), inset 0 0 0 3px rgba(255,255,255,.12)
+}
+.eyebrow{color:var(--gold);font-size:11px;letter-spacing:.2em;font-weight:800;margin:0 0 8px}
+h1{font-size:28px;line-height:1.05;margin:0;font-weight:800;letter-spacing:-.03em}
+.sub{color:var(--muted);font-size:13px;margin:12px auto 0;max-width:330px;line-height:1.6}
+
+.glass{
+  background:linear-gradient(180deg,rgba(18,18,20,.95),rgba(10,10,11,.95));
+  border:1px solid var(--line);border-radius:18px;
+  box-shadow:0 10px 35px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.025)
+}
+.profile{display:flex;justify-content:space-between;align-items:center;padding:14px 15px;margin:8px 0 22px}
+.profile strong{display:block;margin-top:4px;font-size:14px}
+.muted{font-size:11px;color:var(--muted)}
+.badge{font-size:10px;font-weight:800;letter-spacing:.08em;padding:8px 10px;border-radius:999px}
+.badge.inactive{color:#ffbdbd;background:rgba(255,80,80,.1);border:1px solid rgba(255,80,80,.22)}
+
+.section{margin-top:18px}
+.section-head{display:flex;justify-content:space-between;align-items:end;margin:0 4px 12px}
+.section-head h2{font-size:17px;margin:0}
+.section-head span{font-size:11px;color:var(--muted)}
+
+.plans{display:grid;gap:14px}
+.plan{position:relative;padding:17px}
+.plan.featured{border-color:rgba(244,196,78,.7);box-shadow:0 0 28px rgba(244,196,78,.08)}
+.popular{position:absolute;right:14px;top:-10px;background:var(--gold);color:#121212;font-size:9px;font-weight:900;padding:6px 9px;border-radius:999px;letter-spacing:.08em}
+.plan-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.plan-name{font-size:11px;color:var(--gold);font-weight:800;letter-spacing:.14em;margin:0 0 5px}
+.plan h3{font-size:20px;margin:0}
+.price{font-size:26px;font-weight:800;color:var(--gold2)}
+ul{padding:0;margin:14px 0 16px;display:grid;gap:8px;list-style:none}
+li{font-size:12px;color:#d5d5d5;position:relative;padding-left:19px}
+li:before{content:"✓";position:absolute;left:0;color:var(--gold);font-weight:900}
+
+.gold-btn{
+  width:100%;border:0;border-radius:12px;padding:13px 14px;
+  background:linear-gradient(180deg,#ffd96c,#e7b639);
+  color:#0c0c0c;font-size:12px;font-weight:900;letter-spacing:.04em;
+  box-shadow:0 7px 22px rgba(244,196,78,.14)
+}
+.gold-btn:active{transform:translateY(1px)}
+.large{padding:15px}
+
+.hidden{display:none}
+.checkout{padding:20px;text-align:center}
+.checkout h2{font-size:22px;margin:8px 0}
+.checkout-price{font-size:42px;font-weight:800;color:var(--gold2);margin:5px 0 18px}
+.order-row{display:flex;justify-content:space-between;border-top:1px solid rgba(255,255,255,.06);padding:12px 0;font-size:12px}
+.order-row span{color:var(--muted)}
+.pending{color:#ffd86b}
+.ghost-btn{
+  width:100%;padding:13px;border-radius:12px;margin-top:10px;background:transparent;
+  color:#d8d8d8;border:1px solid rgba(255,255,255,.12);font-weight:700;font-size:12px
+}
+.tiny{font-size:10px;line-height:1.55;color:#777;margin:14px 2px 0}
+footer{text-align:center;padding:28px 10px 0;color:#777}
+footer p{font-size:11px;font-weight:800;letter-spacing:.1em;color:#aaa;margin:0 0 6px}
+footer span{font-size:9px}
+
+@media (min-width:440px){
+  h1{font-size:32px}
+  .plan{padding:19px}
+}
