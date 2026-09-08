@@ -56,12 +56,15 @@ backButton.addEventListener('click', () => {
 payButton.addEventListener('click', () => {
   if (!selectedOrder) return;
 
-  // CHANGE THIS to your real external payment page URL.
-  const paymentPage = 'https://hehe-creator93.github.io/quotex-market-analyzer-ai/payment.html';
+  const paymentPage =
+    'https://hehe-creator93.github.io/quotex-market-analyzer-ai/payment.html';
 
-  location.href = paymentPage + '?order=' + order + '&plan=' + plan + '&amount=' + amount;
+  const url =
+    paymentPage +
+    '?order=' + encodeURIComponent(selectedOrder.orderId) +
+    '&plan=' + encodeURIComponent(selectedOrder.plan) +
+    '&amount=' + encodeURIComponent(selectedOrder.price);
 
-  // Opening externally makes it suitable for a separate website checkout.
   if (tg?.openLink) {
     tg.openLink(url);
   } else {
