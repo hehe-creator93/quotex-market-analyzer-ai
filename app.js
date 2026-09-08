@@ -57,9 +57,9 @@ payButton.addEventListener('click', () => {
   if (!selectedOrder) return;
 
   // CHANGE THIS to your real external payment page URL.
-  const paymentBaseUrl = 'https://YOUR-DOMAIN.com/payment';
+  const paymentPage = 'https://hehe-creator93.github.io/quotex-market-analyzer-ai/payment.html';
 
-  const url = `${paymentBaseUrl}?order=${encodeURIComponent(selectedOrder.orderId)}&plan=${encodeURIComponent(selectedOrder.plan)}&amount=${encodeURIComponent(selectedOrder.price)}`;
+  location.href = paymentPage + '?order=' + order + '&plan=' + plan + '&amount=' + amount;
 
   // Opening externally makes it suitable for a separate website checkout.
   if (tg?.openLink) {
