@@ -2,197 +2,587 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
+
   <title>QUOTEX MARKET ANALYZER AI</title>
+
   <link rel="stylesheet" href="styles.css" />
+
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 
 <body>
+
   <div class="app-shell">
 
+    <!-- HERO -->
+
     <header class="hero">
+
       <div class="logo-orb">Q</div>
 
-      <p class="eyebrow">AI-POWERED MARKET ANALYSIS</p>
+      <p class="eyebrow">
+        AI-POWERED MARKET ANALYSIS
+      </p>
 
       <h1>
-        QUOTEX MARKET<br/>
+        QUOTEX MARKET<br />
         ANALYZER AI
       </h1>
 
       <p class="sub">
         Premium market-analysis access inside Telegram.
       </p>
+
     </header>
 
 
+    <!-- PROFILE -->
+
     <section id="profileCard" class="glass profile">
+
       <div>
-        <span class="muted">Telegram User</span>
-        <strong id="userName">Guest</strong>
+
+        <span class="muted">
+          Telegram User
+        </span>
+
+        <strong id="userName">
+          Guest
+        </strong>
+
       </div>
 
-      <span id="subscriptionBadge" class="badge inactive">
+      <span
+        id="subscriptionBadge"
+        class="badge inactive">
+
         INACTIVE
+
       </span>
+
     </section>
 
+
+    <!-- AI ANALYZER -->
+
+    <section class="section analyzer-section">
+
+      <div class="section-head">
+
+        <div>
+
+          <h2>
+            🤖 AI Market Analyzer
+          </h2>
+
+          <span>
+            Upload your Quotex chart
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <div class="glass analyzer-card">
+
+        <p class="analyzer-title">
+          📸 Upload Chart Screenshot
+        </p>
+
+        <p class="analyzer-description">
+          Upload a clear screenshot of your trading chart
+          for AI-powered market analysis.
+        </p>
+
+
+        <!-- FILE INPUT -->
+
+        <label
+          for="chartUpload"
+          class="upload-box"
+          id="uploadBox">
+
+          <div class="upload-icon">
+            📷
+          </div>
+
+          <strong>
+            TAP TO UPLOAD
+          </strong>
+
+          <span>
+            JPG, PNG or WEBP
+          </span>
+
+        </label>
+
+        <input
+          type="file"
+          id="chartUpload"
+          accept="image/png,image/jpeg,image/webp"
+          hidden
+        />
+
+
+        <!-- IMAGE PREVIEW -->
+
+        <div
+          id="imagePreviewContainer"
+          class="image-preview-container hidden">
+
+          <img
+            id="imagePreview"
+            class="image-preview"
+            alt="Chart Preview"
+          />
+
+          <button
+            type="button"
+            id="removeImage"
+            class="remove-image">
+
+            ✕ REMOVE
+
+          </button>
+
+        </div>
+
+
+        <!-- ANALYZE BUTTON -->
+
+        <button
+          type="button"
+          id="analyzeButton"
+          class="gold-btn large analyzer-button"
+          disabled>
+
+          🤖 ANALYZE CHART
+
+        </button>
+
+
+        <!-- LOADING -->
+
+        <div
+          id="analyzerLoading"
+          class="analyzer-loading hidden">
+
+          <div class="loading-spinner"></div>
+
+          <strong>
+            AI ANALYZING...
+          </strong>
+
+          <span>
+            Reading chart structure and market conditions
+          </span>
+
+        </div>
+
+
+        <!-- RESULT -->
+
+        <div
+          id="analysisResult"
+          class="analysis-result hidden">
+
+          <div class="result-header">
+
+            <span class="eyebrow">
+              AI ANALYSIS RESULT
+            </span>
+
+          </div>
+
+
+          <div class="signal-box">
+
+            <span class="signal-label">
+              SIGNAL
+            </span>
+
+            <strong id="signalResult">
+              —
+            </strong>
+
+          </div>
+
+
+          <div class="result-grid">
+
+            <div class="result-item">
+
+              <span>
+                Confidence
+              </span>
+
+              <strong id="confidenceResult">
+                —
+              </strong>
+
+            </div>
+
+
+            <div class="result-item">
+
+              <span>
+                Timeframe
+              </span>
+
+              <strong id="timeframeResult">
+                —
+              </strong>
+
+            </div>
+
+
+            <div class="result-item">
+
+              <span>
+                Market
+              </span>
+
+              <strong id="marketResult">
+                —
+              </strong>
+
+            </div>
+
+
+            <div class="result-item">
+
+              <span>
+                Risk
+              </span>
+
+              <strong id="riskResult">
+                —
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <div class="analysis-reason">
+
+            <span>
+              🧠 AI Analysis
+            </span>
+
+            <p id="reasonResult">
+              Analysis will appear here.
+            </p>
+
+          </div>
+
+
+          <p class="tiny">
+            AI analysis is informational only. Market conditions
+            can change rapidly and trading involves risk.
+          </p>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- PLANS -->
 
     <section class="section">
 
       <div class="section-head">
-        <h2>Choose Your Plan</h2>
-        <span>Secure access</span>
+
+        <h2>
+          Choose Your Plan
+        </h2>
+
+        <span>
+          Secure access
+        </span>
+
       </div>
 
 
       <div class="plans">
 
+
         <!-- STARTER -->
+
         <article class="plan glass">
 
           <div class="plan-top">
+
             <div>
-              <p class="plan-name">STARTER</p>
-              <h3>15 Days</h3>
+
+              <p class="plan-name">
+                STARTER
+              </p>
+
+              <h3>
+                15 Days
+              </h3>
+
             </div>
 
-            <div class="price">$60</div>
+            <div class="price">
+              $60
+            </div>
+
           </div>
 
+
           <ul>
-            <li>30 Signals Daily</li>
-            <li>AI Signal Analysis</li>
-            <li>Chart Screenshot Upload</li>
-            <li>15 Days Access</li>
+
+            <li>
+              30 Signals Daily
+            </li>
+
+            <li>
+              AI Signal Analysis
+            </li>
+
+            <li>
+              Chart Screenshot Upload
+            </li>
+
+            <li>
+              15 Days Access
+            </li>
+
           </ul>
+
 
           <button
             class="gold-btn"
             data-plan="starter"
             data-price="60">
+
             SELECT STARTER
+
           </button>
 
         </article>
 
 
         <!-- PRO -->
-        <article class="plan glass featured">
 
-          <span class="popular">POPULAR</span>
+        <article
+          class="plan glass featured">
+
+          <span class="popular">
+            POPULAR
+          </span>
+
 
           <div class="plan-top">
+
             <div>
-              <p class="plan-name">PRO</p>
-              <h3>1 Month</h3>
+
+              <p class="plan-name">
+                PRO
+              </p>
+
+              <h3>
+                1 Month
+              </h3>
+
             </div>
 
-            <div class="price">$80</div>
+            <div class="price">
+              $80
+            </div>
+
           </div>
 
+
           <ul>
-            <li>100 Signals Daily</li>
-            <li>AI Signal Analysis</li>
-            <li>Chart Screenshot Upload</li>
-            <li>30 Days Access</li>
+
+            <li>
+              100 Signals Daily
+            </li>
+
+            <li>
+              AI Signal Analysis
+            </li>
+
+            <li>
+              Chart Screenshot Upload
+            </li>
+
+            <li>
+              30 Days Access
+            </li>
+
           </ul>
+
 
           <button
             class="gold-btn"
             data-plan="pro"
             data-price="80">
+
             SELECT PRO
+
           </button>
 
         </article>
 
 
         <!-- ELITE -->
+
         <article class="plan glass">
 
           <div class="plan-top">
+
             <div>
-              <p class="plan-name">ELITE</p>
-              <h3>Permanent</h3>
+
+              <p class="plan-name">
+                ELITE
+              </p>
+
+              <h3>
+                Permanent
+              </h3>
+
             </div>
 
-            <div class="price">$150</div>
+            <div class="price">
+              $150
+            </div>
+
           </div>
 
+
           <ul>
-            <li>Unlimited Signals Daily</li>
-            <li>AI Signal Analysis</li>
-            <li>Chart Screenshot Upload</li>
-            <li>Lifetime Access</li>
+
+            <li>
+              Unlimited Signals Daily
+            </li>
+
+            <li>
+              AI Signal Analysis
+            </li>
+
+            <li>
+              Chart Screenshot Upload
+            </li>
+
+            <li>
+              Lifetime Access
+            </li>
+
           </ul>
+
 
           <button
             class="gold-btn"
             data-plan="elite"
             data-price="150">
+
             SELECT ELITE
+
           </button>
 
         </article>
 
+
       </div>
+
     </section>
 
 
     <!-- CHECKOUT -->
-    <section id="checkout" class="section hidden">
+
+    <section
+      id="checkout"
+      class="section hidden">
 
       <div class="glass checkout">
 
-        <p class="eyebrow">ORDER SUMMARY</p>
+        <p class="eyebrow">
+          ORDER SUMMARY
+        </p>
+
 
         <h2 id="checkoutPlan">
           PRO PLAN
         </h2>
 
-        <div class="checkout-price" id="checkoutPrice">
+
+        <div
+          class="checkout-price"
+          id="checkoutPrice">
+
           $80
+
         </div>
 
+
         <div class="order-row">
-          <span>Order ID</span>
+
+          <span>
+            Order ID
+          </span>
+
           <strong id="orderId">
             QMAI-000000
           </strong>
+
         </div>
 
+
         <div class="order-row">
-          <span>Status</span>
+
+          <span>
+            Status
+          </span>
+
           <strong class="pending">
             PENDING
           </strong>
+
         </div>
 
 
         <button
           id="payButton"
           class="gold-btn large">
+
           OPEN PAYMENT WEBSITE
+
         </button>
 
 
         <button
           id="backButton"
           class="ghost-btn">
+
           BACK TO PLANS
+
         </button>
 
 
         <p class="tiny">
-          Payment confirmation should be verified by your payment provider/server before access is activated.
+
+          Payment confirmation should be verified by your
+          payment provider/server before access is activated.
+
         </p>
 
       </div>
 
     </section>
 
+
+    <!-- FOOTER -->
 
     <footer>
 
@@ -206,10 +596,200 @@
 
     </footer>
 
+
   </div>
 
 
+  <!-- APP JS -->
+
   <script src="app.js"></script>
+
+
+  <!-- ANALYZER UI JS -->
+
+  <script>
+
+    const chartUpload =
+      document.getElementById('chartUpload');
+
+    const uploadBox =
+      document.getElementById('uploadBox');
+
+    const imagePreviewContainer =
+      document.getElementById('imagePreviewContainer');
+
+    const imagePreview =
+      document.getElementById('imagePreview');
+
+    const removeImage =
+      document.getElementById('removeImage');
+
+    const analyzeButton =
+      document.getElementById('analyzeButton');
+
+    let selectedImage = null;
+
+
+    /* FILE SELECT */
+
+    chartUpload.addEventListener('change', function () {
+
+      const file = this.files[0];
+
+      if (!file) return;
+
+
+      if (!file.type.startsWith('image/')) {
+
+        alert('Please select an image.');
+
+        this.value = '';
+
+        return;
+
+      }
+
+
+      selectedImage = file;
+
+
+      const reader =
+        new FileReader();
+
+
+      reader.onload = function (event) {
+
+        imagePreview.src =
+          event.target.result;
+
+        imagePreviewContainer.classList.remove(
+          'hidden'
+        );
+
+        uploadBox.classList.add(
+          'hidden'
+        );
+
+        analyzeButton.disabled = false;
+
+      };
+
+
+      reader.readAsDataURL(file);
+
+    });
+
+
+    /* REMOVE IMAGE */
+
+    removeImage.addEventListener(
+      'click',
+      function () {
+
+        selectedImage = null;
+
+        chartUpload.value = '';
+
+        imagePreview.src = '';
+
+        imagePreviewContainer.classList.add(
+          'hidden'
+        );
+
+        uploadBox.classList.remove(
+          'hidden'
+        );
+
+        analyzeButton.disabled = true;
+
+      }
+    );
+
+
+    /* TEMPORARY ANALYZE BUTTON */
+
+    analyzeButton.addEventListener(
+      'click',
+      function () {
+
+        if (!selectedImage) return;
+
+
+        const loading =
+          document.getElementById(
+            'analyzerLoading'
+          );
+
+        const result =
+          document.getElementById(
+            'analysisResult'
+          );
+
+
+        analyzeButton.disabled = true;
+
+        loading.classList.remove(
+          'hidden'
+        );
+
+        result.classList.add(
+          'hidden'
+        );
+
+
+        /*
+          AI BACKEND WILL BE CONNECTED
+          IN THE NEXT STEP.
+        */
+
+        setTimeout(function () {
+
+          loading.classList.add(
+            'hidden'
+          );
+
+          result.classList.remove(
+            'hidden'
+          );
+
+          document.getElementById(
+            'signalResult'
+          ).textContent =
+            'WAITING FOR AI';
+
+          document.getElementById(
+            'confidenceResult'
+          ).textContent =
+            '—';
+
+          document.getElementById(
+            'timeframeResult'
+          ).textContent =
+            '—';
+
+          document.getElementById(
+            'marketResult'
+          ).textContent =
+            '—';
+
+          document.getElementById(
+            'riskResult'
+          ).textContent =
+            '—';
+
+          document.getElementById(
+            'reasonResult'
+          ).textContent =
+            'AI backend is not connected yet.';
+
+          analyzeButton.disabled = false;
+
+        }, 1200);
+
+      }
+    );
+
+  </script>
 
 </body>
 </html>
