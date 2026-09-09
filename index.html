@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
   <meta charset="UTF-8" />
+
   <meta
     name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
@@ -12,17 +14,24 @@
   <link rel="stylesheet" href="styles.css" />
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
 </head>
+
 
 <body>
 
   <div class="app-shell">
 
-    <!-- HERO -->
+
+    <!-- =========================
+         HERO
+    ========================== -->
 
     <header class="hero">
 
-      <div class="logo-orb">Q</div>
+      <div class="logo-orb">
+        Q
+      </div>
 
       <p class="eyebrow">
         AI-POWERED MARKET ANALYSIS
@@ -40,9 +49,14 @@
     </header>
 
 
-    <!-- PROFILE -->
+    <!-- =========================
+         PROFILE
+    ========================== -->
 
-    <section id="profileCard" class="glass profile">
+    <section
+      id="profileCard"
+      class="glass profile"
+    >
 
       <div>
 
@@ -56,20 +70,23 @@
 
       </div>
 
+
       <span
         id="subscriptionBadge"
-        class="badge inactive">
-
+        class="badge inactive"
+      >
         INACTIVE
-
       </span>
 
     </section>
 
 
-    <!-- AI ANALYZER -->
+    <!-- =========================
+         AI ANALYZER
+    ========================== -->
 
     <section class="section analyzer-section">
+
 
       <div class="section-head">
 
@@ -90,9 +107,11 @@
 
       <div class="glass analyzer-card">
 
+
         <p class="analyzer-title">
           📸 Upload Chart Screenshot
         </p>
+
 
         <p class="analyzer-description">
           Upload a clear screenshot of your trading chart
@@ -105,7 +124,8 @@
         <label
           for="chartUpload"
           class="upload-box"
-          id="uploadBox">
+          id="uploadBox"
+        >
 
           <div class="upload-icon">
             📷
@@ -121,6 +141,7 @@
 
         </label>
 
+
         <input
           type="file"
           id="chartUpload"
@@ -133,7 +154,8 @@
 
         <div
           id="imagePreviewContainer"
-          class="image-preview-container hidden">
+          class="image-preview-container hidden"
+        >
 
           <img
             id="imagePreview"
@@ -141,10 +163,12 @@
             alt="Chart Preview"
           />
 
+
           <button
             type="button"
             id="removeImage"
-            class="remove-image">
+            class="remove-image"
+          >
 
             ✕ REMOVE
 
@@ -159,7 +183,8 @@
           type="button"
           id="analyzeButton"
           class="gold-btn large analyzer-button"
-          disabled>
+          disabled
+        >
 
           🤖 ANALYZE CHART
 
@@ -170,7 +195,8 @@
 
         <div
           id="analyzerLoading"
-          class="analyzer-loading hidden">
+          class="analyzer-loading hidden"
+        >
 
           <div class="loading-spinner"></div>
 
@@ -189,7 +215,8 @@
 
         <div
           id="analysisResult"
-          class="analysis-result hidden">
+          class="analysis-result hidden"
+        >
 
           <div class="result-header">
 
@@ -214,6 +241,7 @@
 
 
           <div class="result-grid">
+
 
             <div class="result-item">
 
@@ -283,8 +311,11 @@
 
 
           <p class="tiny">
-            AI analysis is informational only. Market conditions
-            can change rapidly and trading involves risk.
+
+            AI analysis is informational only.
+            Market conditions can change rapidly
+            and trading involves risk.
+
           </p>
 
         </div>
@@ -294,9 +325,12 @@
     </section>
 
 
-    <!-- PLANS -->
+    <!-- =========================
+         PLANS
+    ========================== -->
 
     <section class="section">
+
 
       <div class="section-head">
 
@@ -314,9 +348,12 @@
       <div class="plans">
 
 
-        <!-- STARTER -->
+        <!-- =========================
+             STARTER
+        ========================== -->
 
         <article class="plan glass">
+
 
           <div class="plan-top">
 
@@ -331,6 +368,7 @@
               </h3>
 
             </div>
+
 
             <div class="price">
               $60
@@ -363,7 +401,8 @@
           <button
             class="gold-btn"
             data-plan="starter"
-            data-price="60">
+            data-price="60"
+          >
 
             SELECT STARTER
 
@@ -372,10 +411,13 @@
         </article>
 
 
-        <!-- PRO -->
+        <!-- =========================
+             PRO
+        ========================== -->
 
         <article
-          class="plan glass featured">
+          class="plan glass featured"
+        >
 
           <span class="popular">
             POPULAR
@@ -395,6 +437,7 @@
               </h3>
 
             </div>
+
 
             <div class="price">
               $80
@@ -427,7 +470,8 @@
           <button
             class="gold-btn"
             data-plan="pro"
-            data-price="80">
+            data-price="80"
+          >
 
             SELECT PRO
 
@@ -436,9 +480,12 @@
         </article>
 
 
-        <!-- ELITE -->
+        <!-- =========================
+             ELITE
+        ========================== -->
 
         <article class="plan glass">
+
 
           <div class="plan-top">
 
@@ -453,6 +500,7 @@
               </h3>
 
             </div>
+
 
             <div class="price">
               $150
@@ -485,7 +533,8 @@
           <button
             class="gold-btn"
             data-plan="elite"
-            data-price="150">
+            data-price="150"
+          >
 
             SELECT ELITE
 
@@ -499,13 +548,18 @@
     </section>
 
 
-    <!-- CHECKOUT -->
+    <!-- =========================
+         CHECKOUT
+    ========================== -->
 
     <section
       id="checkout"
-      class="section hidden">
+      class="section hidden"
+    >
+
 
       <div class="glass checkout">
+
 
         <p class="eyebrow">
           ORDER SUMMARY
@@ -519,7 +573,8 @@
 
         <div
           class="checkout-price"
-          id="checkoutPrice">
+          id="checkoutPrice"
+        >
 
           $80
 
@@ -554,7 +609,8 @@
 
         <button
           id="payButton"
-          class="gold-btn large">
+          class="gold-btn large"
+        >
 
           OPEN PAYMENT WEBSITE
 
@@ -563,7 +619,8 @@
 
         <button
           id="backButton"
-          class="ghost-btn">
+          class="ghost-btn"
+        >
 
           BACK TO PLANS
 
@@ -572,8 +629,9 @@
 
         <p class="tiny">
 
-          Payment confirmation should be verified by your
-          payment provider/server before access is activated.
+          Payment confirmation should be verified
+          by your payment provider/server before
+          access is activated.
 
         </p>
 
@@ -582,7 +640,9 @@
     </section>
 
 
-    <!-- FOOTER -->
+    <!-- =========================
+         FOOTER
+    ========================== -->
 
     <footer>
 
@@ -600,193 +660,449 @@
   </div>
 
 
-  <!-- APP JS -->
+  <!-- =========================
+       APP JS
+  ========================== -->
 
   <script src="app.js"></script>
 
 
-  <!-- ANALYZER UI JS -->
+  <!-- =========================
+       ANALYZER UI JS
+  ========================== -->
 
-<script>
+  <script>
 
-const chartUpload = document.getElementById("chartUpload");
-const uploadBox = document.getElementById("uploadBox");
-const imagePreviewContainer = document.getElementById("imagePreviewContainer");
-const imagePreview = document.getElementById("imagePreview");
-const removeImage = document.getElementById("removeImage");
-const analyzeButton = document.getElementById("analyzeButton");
-const loading = document.getElementById("analyzerLoading");
-const result = document.getElementById("analysisResult");
-
-let selectedImage = null;
+    const tg =
+      window.Telegram?.WebApp;
 
 
-/* =========================
-   SELECT IMAGE
-========================= */
+    /* =========================
+       TELEGRAM INITIALIZE
+    ========================== */
 
-chartUpload.onchange = function () {
+    if (tg) {
 
-    const file = chartUpload.files[0];
+      tg.ready();
 
-    if (!file) {
-        return;
+      tg.expand();
+
     }
 
-    if (!file.type.startsWith("image/")) {
 
-        alert("Please select a valid image.");
+    /* =========================
+       TELEGRAM AUTH DATA
+    ========================== */
 
-        chartUpload.value = "";
-
-        return;
-    }
-
-    selectedImage = file;
-
-    const reader = new FileReader();
-
-    reader.onload = function (event) {
-
-        imagePreview.src = event.target.result;
-
-        imagePreviewContainer.classList.remove("hidden");
-
-        uploadBox.classList.add("hidden");
-
-        analyzeButton.disabled = false;
-
-        result.classList.add("hidden");
-
-    };
-
-    reader.readAsDataURL(file);
-};
+    const telegramUserId =
+      tg?.initDataUnsafe?.user?.id
+        ? String(
+            tg.initDataUnsafe.user.id
+          )
+        : "";
 
 
-/* =========================
-   REMOVE IMAGE
-========================= */
-
-removeImage.onclick = function () {
-
-    selectedImage = null;
-
-    chartUpload.value = "";
-
-    imagePreview.src = "";
-
-    imagePreviewContainer.classList.add("hidden");
-
-    uploadBox.classList.remove("hidden");
-
-    analyzeButton.disabled = true;
-
-    result.classList.add("hidden");
-
-};
+    const telegramInitData =
+      tg?.initData || "";
 
 
-/* =========================
-   ANALYZE CHART
-========================= */
+    /* =========================
+       ELEMENTS
+    ========================== */
 
-analyzeButton.onclick = async function () {
-
-    alert("1. BUTTON WORKING");
-
-    if (!selectedImage) {
-
-        alert("2. NO IMAGE");
-
-        return;
-    }
-
-    alert("2. IMAGE FOUND");
-
-    analyzeButton.disabled = true;
-
-    loading.classList.remove("hidden");
-
-    result.classList.add("hidden");
+    const chartUpload =
+      document.getElementById(
+        "chartUpload"
+      );
 
 
-    try {
+    const uploadBox =
+      document.getElementById(
+        "uploadBox"
+      );
 
-        /* Convert image */
 
-        alert("3. READING IMAGE");
+    const imagePreviewContainer =
+      document.getElementById(
+        "imagePreviewContainer"
+      );
 
-        const reader = new FileReader();
 
-        reader.onload = async function () {
+    const imagePreview =
+      document.getElementById(
+        "imagePreview"
+      );
 
-            try {
 
-                alert("4. IMAGE READ");
+    const removeImage =
+      document.getElementById(
+        "removeImage"
+      );
 
-                const dataUrl = reader.result;
+
+    const analyzeButton =
+      document.getElementById(
+        "analyzeButton"
+      );
+
+
+    const loading =
+      document.getElementById(
+        "analyzerLoading"
+      );
+
+
+    const result =
+      document.getElementById(
+        "analysisResult"
+      );
+
+
+    let selectedImage = null;
+
+
+    /* =========================
+       SELECT IMAGE
+    ========================== */
+
+    chartUpload.onchange =
+      function () {
+
+        const file =
+          chartUpload.files[0];
+
+
+        if (!file) {
+
+          return;
+
+        }
+
+
+        if (
+          !file.type.startsWith(
+            "image/"
+          )
+        ) {
+
+          alert(
+            "Please select a valid image."
+          );
+
+
+          chartUpload.value =
+            "";
+
+
+          return;
+
+        }
+
+
+        selectedImage =
+          file;
+
+
+        const reader =
+          new FileReader();
+
+
+        reader.onload =
+          function (event) {
+
+            imagePreview.src =
+              event.target.result;
+
+
+            imagePreviewContainer
+              .classList
+              .remove(
+                "hidden"
+              );
+
+
+            uploadBox
+              .classList
+              .add(
+                "hidden"
+              );
+
+
+            analyzeButton.disabled =
+              false;
+
+
+            result
+              .classList
+              .add(
+                "hidden"
+              );
+
+          };
+
+
+        reader.readAsDataURL(
+          file
+        );
+
+      };
+
+
+    /* =========================
+       REMOVE IMAGE
+    ========================== */
+
+    removeImage.onclick =
+      function () {
+
+        selectedImage =
+          null;
+
+
+        chartUpload.value =
+          "";
+
+
+        imagePreview.src =
+          "";
+
+
+        imagePreviewContainer
+          .classList
+          .add(
+            "hidden"
+          );
+
+
+        uploadBox
+          .classList
+          .remove(
+            "hidden"
+          );
+
+
+        analyzeButton.disabled =
+          true;
+
+
+        result
+          .classList
+          .add(
+            "hidden"
+          );
+
+      };
+
+
+    /* =========================
+       ANALYZE CHART
+    ========================== */
+
+    analyzeButton.onclick =
+      async function () {
+
+
+        alert(
+          "1. BUTTON WORKING"
+        );
+
+
+        /* =========================
+           TELEGRAM AUTH CHECK
+        ========================== */
+
+        if (!telegramInitData) {
+
+          alert(
+            "Telegram authentication is missing.\n\nPlease close the Mini App and open it again from Telegram."
+          );
+
+
+          return;
+
+        }
+
+
+        if (!telegramUserId) {
+
+          alert(
+            "Telegram user ID is missing.\n\nPlease reopen the Mini App from Telegram."
+          );
+
+
+          return;
+
+        }
+
+
+        /* =========================
+           IMAGE CHECK
+        ========================== */
+
+        if (!selectedImage) {
+
+          alert(
+            "2. NO IMAGE"
+          );
+
+
+          return;
+
+        }
+
+
+        alert(
+          "2. IMAGE FOUND"
+        );
+
+
+        analyzeButton.disabled =
+          true;
+
+
+        loading
+          .classList
+          .remove(
+            "hidden"
+          );
+
+
+        result
+          .classList
+          .add(
+            "hidden"
+          );
+
+
+        try {
+
+
+          /* =========================
+             READ IMAGE
+          ========================== */
+
+          alert(
+            "3. READING IMAGE"
+          );
+
+
+          const reader =
+            new FileReader();
+
+
+          reader.onload =
+            async function () {
+
+              try {
+
+
+                alert(
+                  "4. IMAGE READ"
+                );
+
+
+                const dataUrl =
+                  reader.result;
+
 
                 const base64 =
-                    dataUrl.split(",")[1];
+                  dataUrl
+                    .split(",")[1];
+
 
                 if (!base64) {
 
-                    alert("ERROR: BASE64 EMPTY");
+                  alert(
+                    "ERROR: BASE64 EMPTY"
+                  );
 
-                    analyzeButton.disabled = false;
 
-                    loading.classList.add("hidden");
+                  analyzeButton.disabled =
+                    false;
 
-                    return;
+
+                  loading
+                    .classList
+                    .add(
+                      "hidden"
+                    );
+
+
+                  return;
+
                 }
 
 
-                alert("5. SENDING TO AI");
+                alert(
+                  "5. SENDING TO AI"
+                );
 
 
-                const response = await fetch(
+                /* =========================
+                   SECURE API REQUEST
+                ========================== */
+
+                const response =
+                  await fetch(
 
                     "https://kqshqlgprneqiuohjsyd.supabase.co/functions/v1/analyze-chart",
 
                     {
 
-                        method: "POST",
+                      method:
+                        "POST",
 
-                        headers: {
 
-                            "Content-Type":
-                                "application/json"
+                      headers: {
 
-                        },
+                        "Content-Type":
+                          "application/json"
 
-                        body: JSON.stringify({
+                      },
 
-                            image: base64,
 
-                            mime_type:
-                                selectedImage.type
+                      body:
+                        JSON.stringify({
+
+                          image:
+                            base64,
+
+
+                          mime_type:
+                            selectedImage.type,
+
+
+                          telegram_user_id:
+                            telegramUserId,
+
+
+                          telegram_init_data:
+                            telegramInitData
 
                         })
 
                     }
 
-                );
+                  );
 
+
+                /* =========================
+                   SERVER RESPONSE
+                ========================== */
 
                 alert(
-                    "6. SERVER RESPONSE: " +
-                    response.status
+                  "6. SERVER RESPONSE: " +
+                  response.status
                 );
 
 
                 const text =
-                    await response.text();
+                  await response.text();
 
 
                 console.log(
-                    "AI SERVER RESPONSE:",
-                    text
+                  "AI SERVER RESPONSE:",
+                  text
                 );
 
 
@@ -795,159 +1111,222 @@ analyzeButton.onclick = async function () {
 
                 try {
 
-                    data =
-                        JSON.parse(text);
+                  data =
+                    JSON.parse(
+                      text
+                    );
 
                 } catch (e) {
 
-                    alert(
-                        "SERVER JSON ERROR:\n" +
-                        text
-                    );
+                  alert(
+                    "SERVER JSON ERROR:\n" +
+                    text
+                  );
 
-                    throw e;
+
+                  throw e;
+
                 }
 
 
-                if (!response.ok || !data.ok) {
+                /* =========================
+                   SERVER ERROR
+                ========================== */
 
-                    alert(
-                        "AI ERROR:\n" +
-                        (
-                            data.message ||
-                            "Unknown error"
-                        )
-                    );
+                if (
+                  !response.ok ||
+                  !data.ok
+                ) {
 
-                    throw new Error(
-                        data.message ||
-                        "AI analysis failed."
-                    );
+                  alert(
+                    "AI ERROR:\n\n" +
+                    (
+                      data.message ||
+                      "Unknown error"
+                    )
+                  );
+
+
+                  throw new Error(
+                    data.message ||
+                    "AI analysis failed."
+                  );
+
                 }
 
 
-                alert("7. AI RESULT RECEIVED");
+                /* =========================
+                   AI RESULT
+                ========================== */
+
+                alert(
+                  "7. AI RESULT RECEIVED"
+                );
 
 
                 const analysis =
-                    data.analysis || {};
+                  data.analysis ||
+                  {};
 
 
                 document.getElementById(
-                    "signalResult"
+                  "signalResult"
                 ).textContent =
-                    analysis.signal ||
-                    "NO TRADE";
+                  analysis.signal ||
+                  "NO TRADE";
 
 
                 document.getElementById(
-                    "confidenceResult"
+                  "confidenceResult"
                 ).textContent =
-                    typeof analysis.confidence === "number"
-                        ? analysis.confidence + "%"
-                        : "—";
+                  typeof analysis.confidence === "number"
+                    ? analysis.confidence + "%"
+                    : "—";
 
 
                 document.getElementById(
-                    "timeframeResult"
+                  "timeframeResult"
                 ).textContent =
-                    analysis.timeframe ||
-                    "—";
+                  analysis.timeframe ||
+                  "—";
 
 
                 document.getElementById(
-                    "marketResult"
+                  "marketResult"
                 ).textContent =
-                    analysis.market ||
-                    "—";
+                  analysis.market ||
+                  "—";
 
 
                 document.getElementById(
-                    "riskResult"
+                  "riskResult"
                 ).textContent =
-                    analysis.risk ||
-                    "—";
+                  analysis.risk ||
+                  "—";
 
 
                 document.getElementById(
-                    "reasonResult"
+                  "reasonResult"
                 ).textContent =
-                    analysis.reason ||
-                    "No detailed analysis returned.";
+                  analysis.reason ||
+                  "No detailed analysis returned.";
 
 
-                result.classList.remove("hidden");
+                /* =========================
+                   SHOW RESULT
+                ========================== */
+
+                result
+                  .classList
+                  .remove(
+                    "hidden"
+                  );
 
 
                 alert(
-                    "8. ANALYSIS COMPLETE"
+                  "8. ANALYSIS COMPLETE"
                 );
 
-            }
 
-            catch (error) {
+              }
+
+
+              catch (error) {
 
                 console.error(
-                    "AI ANALYZER ERROR:",
-                    error
+                  "AI ANALYZER ERROR:",
+                  error
                 );
+
 
                 alert(
-                    "ERROR:\n\n" +
-                    (
-                        error.message ||
-                        String(error)
-                    )
+                  "ERROR:\n\n" +
+                  (
+                    error.message ||
+                    String(error)
+                  )
                 );
 
-            }
-
-            finally {
-
-                loading.classList.add("hidden");
-
-                analyzeButton.disabled = false;
-
-            }
-
-        };
+              }
 
 
-        reader.onerror = function () {
+              finally {
 
-            alert(
+                loading
+                  .classList
+                  .add(
+                    "hidden"
+                  );
+
+
+                analyzeButton.disabled =
+                  false;
+
+              }
+
+            };
+
+
+          reader.onerror =
+            function () {
+
+              alert(
                 "ERROR: Unable to read image."
-            );
-
-            loading.classList.add("hidden");
-
-            analyzeButton.disabled = false;
-
-        };
+              );
 
 
-        reader.readAsDataURL(selectedImage);
+              loading
+                .classList
+                .add(
+                  "hidden"
+                );
 
-    }
 
-    catch (error) {
+              analyzeButton.disabled =
+                false;
 
-        console.error(error);
+            };
 
-        alert(
+
+          reader.readAsDataURL(
+            selectedImage
+          );
+
+
+        }
+
+
+        catch (error) {
+
+          console.error(
+            error
+          );
+
+
+          alert(
             "ERROR:\n\n" +
             (
-                error.message ||
-                String(error)
+              error.message ||
+              String(error)
             )
-        );
+          );
 
-        loading.classList.add("hidden");
 
-        analyzeButton.disabled = false;
+          loading
+            .classList
+            .add(
+              "hidden"
+            );
 
-    }
 
-};
+          analyzeButton.disabled =
+            false;
 
-</script>
+        }
+
+      };
+
+  </script>
+
+</body>
+</html>
