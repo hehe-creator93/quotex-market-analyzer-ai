@@ -607,275 +607,239 @@
 
   <!-- ANALYZER UI JS -->
 
-  <script>
-  const chartUpload =
-    document.getElementById('chartUpload');
+<script>
+const chartUpload = document.getElementById('chartUpload');
+const uploadBox = document.getElementById('uploadBox');
+const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+const imagePreview = document.getElementById('imagePreview');
+const removeImage = document.getElementById('removeImage');
+const analyzeButton = document.getElementById('analyzeButton');
+const loading = document.getElementById('analyzerLoading');
+const result = document.getElementById('analysisResult');
 
-  const uploadBox =
-    document.getElementById('uploadBox');
+let selectedImage = null;
 
-  const imagePreviewContainer =
-    document.getElementById('imagePreviewContainer');
+/* IMAGE SELECT */
 
-  const imagePreview =
-    document.getElementById('imagePreview');
+chartUpload.addEventListener('change', function () {
 
-  const removeImage =
-    document.getElementById('removeImage');
+  const file = this.files[0];
 
-  const analyzeButton =
-    document.getElementById('analyzeButton');
+  if (!file) return;
 
-  const loading =
-    document.getElementById('analyzerLoading');
+  if (!file.type.startsWith('image/')) {
+    alert('Please select a valid image.');
+    this.value = '';
+    return;
+  }
 
-  const result =
-    document.getElementById('analysisResult');
+  selectedImage = file;
 
-  let selectedImage = null;
+  const reader = new FileReader();
 
+  reader.onload = function (event) {
 
-  /* =========================
-     SELECT IMAGE
-  ========================= */
+    imagePreview.src = event.target.result;
 
-  chartUpload.addEventListener('change', function () {
+    imagePreviewContainer.classList.remove('hidden');
+    uploadBox.classList.add('hidden');
 
-    const file = this.files[0];
-
-    if (!file) return;
-
-    if (!file.type.startsWith('image/')) {
-      alert('Please select a valid image.');
-      this.value = '';
-      return;
-    }
-
-    selectedImage = file;
-
-    const reader = new FileReader();
-
-    reader.onload = function (event) {
-
-      imagePreview.src = event.target.result;
-
-      imagePreviewContainer.classList.remove('hidden');
-
-      uploadBox.classList.add('hidden');
-
-      analyzeButton.disabled = false;
-
-      result.classList.add('hidden');
-    };
-
-    reader.readAsDataURL(file);
-  });
-
-
-  /* =========================
-     REMOVE IMAGE
-  ========================= */
-
-  removeImage.addEventListener('click', function () {
-
-    selectedImage = null;
-
-    chartUpload.value = '';
-
-    imagePreview.src = '';
-
-    imagePreviewContainer.classList.add('hidden');
-
-    uploadBox.classList.remove('hidden');
-
-    analyzeButton.disabled = true;
-
-    result.classList.add('hidden');
-  });
-
-
-  /* =========================
-     ANALYZE CHART
-  ========================= */
-
-  analyzeButton.addEventListener('click', async function () {
-
-    if (!selectedImage) {
-      alert('Please upload a chart screenshot first.');
-      return;
-    }
-
-
-    analyzeButton.disabled = true;
-
-    loading.classList.remove('hidden');
+    analyzeButton.disabled = false;
 
     result.classList.add('hidden');
 
+  };
 
-    try {
+  reader.readAsDataURL(file);
 
-      /*
-        Convert image to Base64
-      */
-
-      const base64 =
-        await fileToBase64(selectedImage);
+});
 
 
-      /*
-        Send image to Supabase Edge Function
-      */
+/* REMOVE IMAGE */
 
-      const response = await fetch(
-        'https://kqshqlgprneqiuohjsyd.supabase.co/functions/v1/analyze-chart',
-        {
-          method: 'POST',
+removeImage.addEventListener('click', function () {
 
-          headers: {
-            'Content-Type': 'application/json'
-          },
+  selectedImage = null;
 
-          body: JSON.stringify({
+  chartUpload.value = '';
 
-            image: base64,
+  imagePreview.src = '';
 
-            mime_type: selectedImage.type
+  imagePreviewContainer.classList.add('hidden');
 
-          })
-        }
-      );
+  uploadBox.classList.remove('hidden');
+
+  analyzeButton.disabled = true;
+
+  result.classList.add('hidden');
+
+});
 
 
-      const data =
-        await response.json();
+/* ANALYZE */
+
+analyzeButton.addEventListener('click', async function () {
+
+  alert('ANALYZE BUTTON CLICKED');
+
+  if (!selectedImage) {
+    alert('No image selected.');
+    return;
+  }
+
+  analyzeButton.disabled = true;
+
+  loading.classList.remove('hidden');
+
+  result.classList.add('hidden');
 
 
-      if (!response.ok || !data.ok) {
+  try {
 
-        throw new Error(
-          data.message ||
-          'AI analysis failed.'
-        );
+    alert('Converting image...');
 
-      }
+    const base64 = await fileToBase64(selectedImage);
 
-
-      /*
-        Display AI result
-      */
-
-      const analysis =
-        data.analysis || {};
+    alert('Image converted. Sending to AI...');
 
 
-      document.getElementById(
-        'signalResult'
-      ).textContent =
-        analysis.signal || 'NO TRADE';
+    const response = await fetch(
+      'https://kqshqlgprneqiuohjsyd.supabase.co/functions/v1/analyze-chart',
+      {
+        method: 'POST',
 
+        headers: {
+          'Content-Type': 'application/json'
+        },
 
-      document.getElementById(
-        'confidenceResult'
-      ).textContent =
-        typeof analysis.confidence === 'number'
-          ? analysis.confidence + '%'
-          : '—';
-
-
-      document.getElementById(
-        'timeframeResult'
-      ).textContent =
-        analysis.timeframe || '—';
-
-
-      document.getElementById(
-        'marketResult'
-      ).textContent =
-        analysis.market || '—';
-
-
-      document.getElementById(
-        'riskResult'
-      ).textContent =
-        analysis.risk || '—';
-
-
-      document.getElementById(
-        'reasonResult'
-      ).textContent =
-        analysis.reason ||
-        'No detailed analysis returned.';
-
-
-      result.classList.remove('hidden');
-
-
-    } catch (error) {
-
-      console.error(
-        'AI ANALYZER ERROR:',
-        error
-      );
-
-
-      alert(
-        error.message ||
-        'Unable to analyze chart.'
-      );
-
-
-    } finally {
-
-      loading.classList.add('hidden');
-
-      analyzeButton.disabled = false;
-
-    }
-
-  });
-
-
-  /* =========================
-     FILE → BASE64
-  ========================= */
-
-  function fileToBase64(file) {
-
-    return new Promise(
-      (resolve, reject) => {
-
-        const reader =
-          new FileReader();
-
-        reader.onload = function () {
-
-          const result =
-            reader.result;
-
-          /*
-            Remove:
-            data:image/jpeg;base64,
-          */
-
-          const base64 =
-            String(result).split(',')[1];
-
-          resolve(base64);
-
-        };
-
-        reader.onerror =
-          reject;
-
-        reader.readAsDataURL(file);
-
+        body: JSON.stringify({
+          image: base64,
+          mime_type: selectedImage.type
+        })
       }
     );
 
+
+    alert('Server responded: ' + response.status);
+
+
+    const text = await response.text();
+
+    console.log('SERVER RESPONSE:', text);
+
+
+    let data;
+
+    try {
+      data = JSON.parse(text);
+    } catch (e) {
+
+      alert('Server returned invalid JSON:\n' + text);
+
+      throw e;
+
+    }
+
+
+    if (!response.ok || !data.ok) {
+
+      alert(
+        'AI ERROR:\n' +
+        (data.message || 'Unknown error')
+      );
+
+      throw new Error(
+        data.message || 'AI analysis failed.'
+      );
+
+    }
+
+
+    const analysis = data.analysis || {};
+
+
+    document.getElementById('signalResult').textContent =
+      analysis.signal || 'NO TRADE';
+
+
+    document.getElementById('confidenceResult').textContent =
+      typeof analysis.confidence === 'number'
+        ? analysis.confidence + '%'
+        : '—';
+
+
+    document.getElementById('timeframeResult').textContent =
+      analysis.timeframe || '—';
+
+
+    document.getElementById('marketResult').textContent =
+      analysis.market || '—';
+
+
+    document.getElementById('riskResult').textContent =
+      analysis.risk || '—';
+
+
+    document.getElementById('reasonResult').textContent =
+      analysis.reason ||
+      'No detailed analysis returned.';
+
+
+    result.classList.remove('hidden');
+
+    alert('AI ANALYSIS SUCCESSFUL!');
+
+
+  } catch (error) {
+
+    console.error('ANALYZER ERROR:', error);
+
+    alert(
+      'ANALYZER ERROR:\n\n' +
+      (error.message || error)
+    );
+
+  } finally {
+
+    loading.classList.add('hidden');
+
+    analyzeButton.disabled = false;
+
   }
 
-</script>
+});
 
-</body>
-</html>
+
+/* FILE → BASE64 */
+
+function fileToBase64(file) {
+
+  return new Promise((resolve, reject) => {
+
+    const reader = new FileReader();
+
+    reader.onload = function () {
+
+      const result = reader.result;
+
+      const base64 =
+        String(result).split(',')[1];
+
+      resolve(base64);
+
+    };
+
+    reader.onerror = function () {
+
+      reject(
+        new Error('Could not read image.')
+      );
+
+    };
+
+    reader.readAsDataURL(file);
+
+  });
+
+}
+</script>
