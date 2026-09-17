@@ -22,7 +22,7 @@ if (tg) {
     ========================= */
 
     fetch(
-      'https://kqshqlgprneqiuohjsyd.supabase.co/functions/v1/track-visitor',
+      'https://kqshqlgprneqiuohjsyd.supabase.co/functions/v1/track_visitor',
       {
         method: 'POST',
         headers: {
