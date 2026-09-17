@@ -1,1 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>QMAI Admin</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #050505;
+      color: #fff;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 25px 18px;
+    }
+
+    h1 {
+      margin: 0;
+      color: #d4af37;
+      font-size: 28px;
+    }
+
+    .subtitle {
+      color: #888;
+      margin-top: 6px;
+      margin-bottom: 25px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .stat {
+      background: #111;
+      border: 1px solid #292929;
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    .stat-title {
+      color: #888;
+      font-size: 13px;
+    }
+
+    .stat-value {
+      color: #d4af37;
+      font-size: 28px;
+      font-weight: bold;
+      margin-top: 8px;
+    }
+
+    .card {
+      background: #0d0d0d;
+      border: 1px solid #292929;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 18px;
+      border-bottom: 1px solid #292929;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-header h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    button {
+      background: #d4af37;
+      border: none;
+      color: #000;
+      padding: 9px 16px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 700px;
+    }
+
+    th,
+    td {
+      padding: 14px;
+      text-align: left;
+      border-bottom: 1px solid #222;
+      font-size: 14px;
+    }
+
+    th {
+      color: #d4af37;
+      background: #111;
+    }
+
+    td {
+      color: #ddd;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 35px;
+      color: #777;
+    }
+
+    .status {
+      margin-top: 15px;
+      color: #888;
+      font-size: 13px;
+    }
+
+    @media (max-width: 700px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>QUOTEX MARKET ANALYZER AI</h1>
+
+    <div class="subtitle">
+      Admin • Visitor Dashboard
+    </div>
+
+    <div class="stats">
+
+      <div class="stat">
+        <div class="stat-title">
+          Total Visitors
+        </div>
+
+        <div class="stat-value" id="totalVisitors">
+          0
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-title">
+          Total Visits
+        </div>
+
+        <div class="stat-value" id="totalVisits">
+          0
+        </div>
+      </div>
+
+      <div class="stat">
+        <div class="stat-title">
+          Last Visitor
+        </div>
+
+        <div class="stat-value" id="lastVisitor">
+          —
+        </div>
+      </div>
+
+    </div>
+
+    <div class="card">
+
+      <div class="card-header">
+
+        <h2>Visitors</h2>
+
+        <button id="refreshButton">
+          Refresh
+        </button>
+
+      </div>
+
+      <div class="table-wrap">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Username</th>
+              <th>Telegram ID</th>
+              <th>Visits</th>
+              <th>First Seen</th>
+              <th>Last Seen</th>
+            </tr>
+          </thead>
+
+          <tbody id="visitorTable">
+
+            <tr>
+              <td colspan="6" class="empty">
+                Loading...
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+    <div class="status" id="status">
+      Dashboard ready
+    </div>
+
+  </div>
+
+  <script src="admin.js"></script>
+
+</body>
+</html>
