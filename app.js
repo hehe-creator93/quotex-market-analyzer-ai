@@ -16,6 +16,29 @@ if (tg) {
       display ||
       user.username ||
       `Telegram ${user.id}`;
+
+    /* =========================
+       VISITOR TRACKING
+    ========================= */
+
+    fetch(
+      'https://kqshqlgprneqiuohjsyd.supabase.co/functions/v1/track-visitor',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          telegram_user_id: String(user.id),
+          username: user.username || '',
+          first_name: user.first_name || '',
+          last_name: user.last_name || ''
+        })
+      }
+    ).catch(() => {
+      // Visitor tracking failure
+      // should not stop the Mini App.
+    });
   }
 }
 
@@ -229,12 +252,6 @@ payButton.addEventListener(
       '?' +
       params.toString();
 
-
-    /*
-      Navigate inside the same
-      Mini App instead of opening
-      an external browser.
-    */
 
     window.location.href =
       url;
