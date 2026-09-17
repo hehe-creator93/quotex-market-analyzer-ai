@@ -8,7 +8,6 @@ const FUNCTION_URL =
   SUPABASE_URL +
   "/functions/v1/admin_visitors";
 
-
 const totalVisitors =
   document.getElementById("totalVisitors");
 
@@ -27,7 +26,6 @@ const status =
 const refreshButton =
   document.getElementById("refreshButton");
 
-
 let accessToken = "";
 
 
@@ -39,14 +37,14 @@ const loginBox =
   document.createElement("div");
 
 loginBox.style.cssText = `
-  position:fixed;
-  inset:0;
-  background:#050505;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
-  padding:20px;
+  position: fixed;
+  inset: 0;
+  background: #050505;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
 `;
 
 loginBox.innerHTML = `
@@ -142,7 +140,7 @@ const loginStatus =
 
 
 /* =========================
-   SUPABASE LOGIN
+   LOGIN
 ========================= */
 
 async function login() {
@@ -171,15 +169,18 @@ async function login() {
     const response =
       await fetch(
         SUPABASE_URL +
-          "/auth/v1/token?grant_type=password",
+        "/auth/v1/token?grant_type=password",
         {
           method: "POST",
+
           headers: {
             "Content-Type":
               "application/json",
+
             "apikey":
               SUPABASE_ANON_KEY
           },
+
           body: JSON.stringify({
             email,
             password
@@ -227,7 +228,7 @@ loginButton.addEventListener(
 
 passwordInput.addEventListener(
   "keydown",
-  (event) => {
+  event => {
 
     if (event.key === "Enter") {
       login();
@@ -248,7 +249,7 @@ async function loadVisitors() {
 
   table.innerHTML = `
     <tr>
-      <td colspan="6" class="empty">
+      <td colspan="7" class="empty">
         Loading...
       </td>
     </tr>
@@ -263,6 +264,7 @@ async function loadVisitors() {
           headers: {
             "Authorization":
               `Bearer ${accessToken}`,
+
             "apikey":
               SUPABASE_ANON_KEY
           }
@@ -311,11 +313,12 @@ async function loadVisitors() {
 
     }
 
+
     if (!visitors.length) {
 
       table.innerHTML = `
         <tr>
-          <td colspan="6" class="empty">
+          <td colspan="7" class="empty">
             No visitors yet
           </td>
         </tr>
@@ -329,59 +332,102 @@ async function loadVisitors() {
 
 
     table.innerHTML =
-      visitors.map(
-        visitor => {
+      visitors.map(visitor => {
 
-          const name =
-            [
-              visitor.first_name,
-              visitor.last_name
-            ]
-            .filter(Boolean)
-            .join(" ") ||
-            "—";
+        const name =
+          [
+            visitor.first_name,
+            visitor.last_name
+          ]
+          .filter(Boolean)
+          .join(" ") ||
+          "—";
 
-          const username =
-            visitor.username
-              ? "@" + visitor.username
-              : "—";
 
-          return `
-            <tr>
+        const username =
+          visitor.username
+            ? "@" + visitor.username
+            : "—";
 
-              <td>
-                ${name}
-              </td>
 
-              <td>
-                ${username}
-              </td>
+        /* =========================
+           ONLINE CHECK
+        ========================= */
 
-              <td>
-                ${visitor.telegram_user_id || "—"}
-              </td>
+        const lastSeen =
+          visitor.last_seen
+            ? new Date(
+                visitor.last_seen
+              ).getTime()
+            : 0;
 
-              <td>
-                ${visitor.visit_count || 0}
-              </td>
+        const now =
+          Date.now();
 
-              <td>
-                ${formatDate(
-                  visitor.first_seen
-                )}
-              </td>
+        const difference =
+          now - lastSeen;
 
-              <td>
-                ${formatDate(
-                  visitor.last_seen
-                )}
-              </td>
+        const isOnline =
+          difference <=
+          2 * 60 * 1000;
 
-            </tr>
-          `;
 
-        }
-      ).join("");
+        const statusHtml =
+          isOnline
+            ? `
+              <span class="online">
+                <span class="dot-online"></span>
+                Online
+              </span>
+            `
+            : `
+              <span class="offline">
+                <span class="dot-offline"></span>
+                Offline
+              </span>
+            `;
+
+
+        return `
+          <tr>
+
+            <td>
+              ${name}
+            </td>
+
+            <td>
+              ${username}
+            </td>
+
+            <td>
+              ${visitor.telegram_user_id || "—"}
+            </td>
+
+            <td>
+              ${statusHtml}
+            </td>
+
+            <td>
+              ${visitor.visit_count || 0}
+            </td>
+
+            <td>
+              ${formatDate(
+                visitor.first_seen
+              )}
+            </td>
+
+            <td>
+              ${formatDate(
+                visitor.last_seen
+              )}
+            </td>
+
+          </tr>
+        `;
+
+      }).join("");
+
 
     status.textContent =
       `Showing ${visitors.length} visitor(s).`;
@@ -392,7 +438,7 @@ async function loadVisitors() {
 
     table.innerHTML = `
       <tr>
-        <td colspan="6" class="empty">
+        <td colspan="7" class="empty">
           Unable to load visitors
         </td>
       </tr>
