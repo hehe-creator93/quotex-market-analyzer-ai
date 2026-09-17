@@ -20,7 +20,7 @@ if (tg) {
     /* =========================
        VISITOR TRACKING
     ========================= */
-
+  console.log("VISITOR TRACKING CODE RUNNING");
     fetch(
       'https://kqshqlgprneqiuohjsyd.supabase.co/functions/v1/track_visitor',
       {
