@@ -258,3 +258,42 @@ payButton.addEventListener(
 
   }
 );
+/* =========================
+   ONLINE HEARTBEAT
+========================= */
+
+setInterval(() => {
+
+  const user =
+    tg?.initDataUnsafe?.user;
+
+  if (!user) return;
+
+  fetch(
+    'https://kqshqlgprneqiuohjsyd.supabase.co/functions/v1/track_visitor',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type':
+          'application/json'
+      },
+      body: JSON.stringify({
+        telegram_user_id:
+          String(user.id),
+
+        username:
+          user.username || '',
+
+        first_name:
+          user.first_name || '',
+
+        last_name:
+          user.last_name || ''
+      })
+    }
+  ).catch(() => {
+    // Heartbeat failure should
+    // not affect the Mini App.
+  });
+
+}, 60000);
