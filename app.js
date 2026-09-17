@@ -19,20 +19,35 @@ if (tg) {
 
     /* =========================
        VISITOR TRACKING
+       FIRST APP OPEN
     ========================= */
-  console.log("VISITOR TRACKING CODE RUNNING");
+
+    console.log("VISITOR TRACKING CODE RUNNING");
+
     fetch(
       'https://kqshqlgprneqiuohjsyd.supabase.co/functions/v1/track_visitor',
       {
         method: 'POST',
+
         headers: {
           'Content-Type': 'application/json'
         },
+
         body: JSON.stringify({
-          telegram_user_id: String(user.id),
-          username: user.username || '',
-          first_name: user.first_name || '',
-          last_name: user.last_name || ''
+          telegram_user_id:
+            String(user.id),
+
+          username:
+            user.username || '',
+
+          first_name:
+            user.first_name || '',
+
+          last_name:
+            user.last_name || '',
+
+          new_visit:
+            true
         })
       }
     ).catch(() => {
@@ -70,7 +85,6 @@ const payButton =
 
 const backButton =
   document.getElementById('backButton');
-
 
 let selectedOrder = null;
 
@@ -113,15 +127,11 @@ document
         const orderId =
           createOrderId();
 
-
         selectedOrder = {
-
           plan,
           price,
           orderId
-
         };
-
 
         checkoutPlan.textContent =
           `${plan} PLAN`;
@@ -131,7 +141,6 @@ document
 
         orderIdEl.textContent =
           orderId;
-
 
         planCards.classList.add(
           'hidden'
@@ -144,7 +153,6 @@ document
         checkout.classList.remove(
           'hidden'
         );
-
 
         tg?.HapticFeedback
           ?.impactOccurred(
@@ -193,14 +201,11 @@ payButton.addEventListener(
       return;
     }
 
-
     const paymentPage =
       'https://hehe-creator93.github.io/quotex-market-analyzer-ai/payment.html';
 
-
     const params =
       new URLSearchParams();
-
 
     params.set(
       'order',
@@ -252,12 +257,13 @@ payButton.addEventListener(
       '?' +
       params.toString();
 
-
     window.location.href =
       url;
 
   }
 );
+
+
 /* =========================
    ONLINE HEARTBEAT
 ========================= */
@@ -273,10 +279,12 @@ setInterval(() => {
     'https://kqshqlgprneqiuohjsyd.supabase.co/functions/v1/track_visitor',
     {
       method: 'POST',
+
       headers: {
         'Content-Type':
           'application/json'
       },
+
       body: JSON.stringify({
         telegram_user_id:
           String(user.id),
@@ -288,7 +296,10 @@ setInterval(() => {
           user.first_name || '',
 
         last_name:
-          user.last_name || ''
+          user.last_name || '',
+
+        new_visit:
+          false
       })
     }
   ).catch(() => {
