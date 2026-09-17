@@ -92,6 +92,10 @@
       cursor: pointer;
     }
 
+    button:hover {
+      opacity: 0.9;
+    }
+
     .table-wrap {
       overflow-x: auto;
     }
@@ -99,7 +103,7 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 700px;
+      min-width: 800px;
     }
 
     th,
@@ -117,6 +121,38 @@
 
     td {
       color: #ddd;
+    }
+
+    .online {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #4ade80;
+      font-weight: bold;
+    }
+
+    .offline {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #777;
+      font-weight: bold;
+    }
+
+    .dot-online,
+    .dot-offline {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot-online {
+      background: #4ade80;
+    }
+
+    .dot-offline {
+      background: #666;
     }
 
     .empty {
@@ -208,6 +244,7 @@
               <th>Name</th>
               <th>Username</th>
               <th>Telegram ID</th>
+              <th>Status</th>
               <th>Visits</th>
               <th>First Seen</th>
               <th>Last Seen</th>
@@ -217,7 +254,7 @@
           <tbody id="visitorTable">
 
             <tr>
-              <td colspan="6" class="empty">
+              <td colspan="7" class="empty">
                 Loading...
               </td>
             </tr>
