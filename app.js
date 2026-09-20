@@ -1,60 +1,315 @@
-const tg = window.Telegram?.WebApp;
+const tg =
+  window.Telegram?.WebApp;
+
+
+/* =========================
+   TELEGRAM
+========================= */
 
 if (tg) {
+
   tg.ready();
+
   tg.expand();
 
-  const user = tg.initDataUnsafe?.user;
+}
 
-  if (user) {
-    const display =
-      [user.first_name, user.last_name]
-        .filter(Boolean)
-        .join(' ');
 
-    document.getElementById('userName').textContent =
+/* =========================
+   TELEGRAM USER
+========================= */
+
+const telegramUser =
+  tg?.initDataUnsafe?.user;
+
+
+/* =========================
+   USER DISPLAY
+========================= */
+
+if (telegramUser) {
+
+  const display =
+    [
+      telegramUser.first_name,
+      telegramUser.last_name
+    ]
+      .filter(Boolean)
+      .join(' ');
+
+
+  const userName =
+    document.getElementById(
+      'userName'
+    );
+
+
+  if (userName) {
+
+    userName.textContent =
       display ||
-      user.username ||
-      `Telegram ${user.id}`;
+      telegramUser.username ||
+      `Telegram ${telegramUser.id}`;
+
+  }
+
+}
+
+
+/* =========================
+   SUBSCRIPTION STATUS
+========================= */
+
+async function checkSubscription() {
+
+  if (!telegramUser) {
+
+    console.log(
+      'No Telegram user found.'
+    );
+
+    return;
+
+  }
+
+
+  const statusElement =
+    document.getElementById(
+      'subscriptionStatus'
+    );
+
+
+  if (statusElement) {
+
+    statusElement.textContent =
+      'CHECKING...';
+
+  }
+
+
+  try {
+
+    const response =
+      await fetch(
+
+        'https://kqshqlgprneqiuohjsyd.supabase.co/functions/v1/check-subscription',
+
+        {
+
+          method:
+            'POST',
+
+          headers: {
+
+            'Content-Type':
+              'application/json'
+
+          },
+
+          body:
+            JSON.stringify({
+
+              telegram_user_id:
+                String(
+                  telegramUser.id
+                )
+
+            })
+
+        }
+
+      );
+
+
+    const result =
+      await response.json();
+
+
+    console.log(
+      'Subscription result:',
+      result
+    );
+
 
     /* =========================
-       VISITOR TRACKING
-       FIRST APP OPEN
+       ACTIVE
     ========================= */
 
-    console.log("VISITOR TRACKING CODE RUNNING");
+    if (
+      result.ok &&
+      result.active
+    ) {
 
-    fetch(
-      'https://kqshqlgprneqiuohjsyd.supabase.co/functions/v1/track_visitor',
-      {
-        method: 'POST',
+      if (statusElement) {
 
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        statusElement.textContent =
+          'ACTIVE';
 
-        body: JSON.stringify({
+        statusElement.classList.remove(
+          'inactive'
+        );
+
+        statusElement.classList.add(
+          'active'
+        );
+
+      }
+
+
+      /* =========================
+         SAVE STATUS
+      ========================= */
+
+      window.userSubscription = {
+
+        active:
+          true,
+
+        plan:
+          result.plan,
+
+        amount:
+          result.amount,
+
+        orderId:
+          result.order_id,
+
+        paidAt:
+          result.paid_at,
+
+        expiresAt:
+          result.subscription_expires_at
+
+      };
+
+
+      console.log(
+        'ACTIVE SUBSCRIPTION:',
+        window.userSubscription
+      );
+
+
+      return;
+
+    }
+
+
+    /* =========================
+       INACTIVE
+    ========================= */
+
+    if (statusElement) {
+
+      statusElement.textContent =
+        'INACTIVE';
+
+      statusElement.classList.remove(
+        'active'
+      );
+
+      statusElement.classList.add(
+        'inactive'
+      );
+
+    }
+
+
+    window.userSubscription = {
+
+      active:
+        false
+
+    };
+
+
+  } catch (error) {
+
+    console.error(
+      'Subscription check error:',
+      error
+    );
+
+
+    if (statusElement) {
+
+      statusElement.textContent =
+        'INACTIVE';
+
+    }
+
+  }
+
+}
+
+
+/* =========================
+   RUN SUBSCRIPTION CHECK
+========================= */
+
+checkSubscription();
+
+
+/* =========================
+   VISITOR TRACKING
+========================= */
+
+if (telegramUser) {
+
+  console.log(
+    "VISITOR TRACKING CODE RUNNING"
+  );
+
+
+  fetch(
+
+    'https://kqshqlgprneqiuohjsyd.supabase.co/functions/v1/track_visitor',
+
+    {
+
+      method:
+        'POST',
+
+      headers: {
+
+        'Content-Type':
+          'application/json'
+
+      },
+
+      body:
+        JSON.stringify({
+
           telegram_user_id:
-            String(user.id),
+            String(
+              telegramUser.id
+            ),
 
           username:
-            user.username || '',
+            telegramUser.username ||
+            '',
 
           first_name:
-            user.first_name || '',
+            telegramUser.first_name ||
+            '',
 
           last_name:
-            user.last_name || '',
+            telegramUser.last_name ||
+            '',
 
           new_visit:
             true
+
         })
-      }
-    ).catch(() => {
-      // Visitor tracking failure
-      // should not stop the Mini App.
-    });
-  }
+
+    }
+
+  ).catch(() => {
+
+    // Visitor tracking failure
+    // should not stop the Mini App.
+
+  });
+
 }
 
 
@@ -63,30 +318,55 @@ if (tg) {
 ========================= */
 
 const checkout =
-  document.getElementById('checkout');
+  document.getElementById(
+    'checkout'
+  );
+
 
 const planCards =
-  document.querySelector('.plans');
+  document.querySelector(
+    '.plans'
+  );
+
 
 const sectionHead =
-  document.querySelector('.section-head');
+  document.querySelector(
+    '.section-head'
+  );
+
 
 const checkoutPlan =
-  document.getElementById('checkoutPlan');
+  document.getElementById(
+    'checkoutPlan'
+  );
+
 
 const checkoutPrice =
-  document.getElementById('checkoutPrice');
+  document.getElementById(
+    'checkoutPrice'
+  );
+
 
 const orderIdEl =
-  document.getElementById('orderId');
+  document.getElementById(
+    'orderId'
+  );
+
 
 const payButton =
-  document.getElementById('payButton');
+  document.getElementById(
+    'payButton'
+  );
+
 
 const backButton =
-  document.getElementById('backButton');
+  document.getElementById(
+    'backButton'
+  );
 
-let selectedOrder = null;
+
+let selectedOrder =
+  null;
 
 
 /* =========================
@@ -99,7 +379,8 @@ function createOrderId() {
     'QMAI-' +
     Math.floor(
       100000 +
-      Math.random() * 900000
+      Math.random() *
+      900000
     )
   );
 
@@ -111,200 +392,267 @@ function createOrderId() {
 ========================= */
 
 document
-  .querySelectorAll('[data-plan]')
-  .forEach(btn => {
+  .querySelectorAll(
+    '[data-plan]'
+  )
+  .forEach(
+    btn => {
 
-    btn.addEventListener(
-      'click',
-      () => {
+      btn.addEventListener(
+        'click',
+        () => {
 
-        const plan =
-          btn.dataset.plan.toUpperCase();
+          const plan =
+            btn.dataset.plan
+              .toUpperCase();
 
-        const price =
-          btn.dataset.price;
 
-        const orderId =
-          createOrderId();
+          const price =
+            btn.dataset.price;
 
-        selectedOrder = {
-          plan,
-          price,
-          orderId
-        };
 
-        checkoutPlan.textContent =
-          `${plan} PLAN`;
+          const orderId =
+            createOrderId();
 
-        checkoutPrice.textContent =
-          `$${price}`;
 
-        orderIdEl.textContent =
-          orderId;
+          selectedOrder = {
 
-        planCards.classList.add(
-          'hidden'
-        );
+            plan,
 
-        sectionHead.classList.add(
-          'hidden'
-        );
+            price,
 
-        checkout.classList.remove(
-          'hidden'
-        );
+            orderId
 
-        tg?.HapticFeedback
-          ?.impactOccurred(
-            'medium'
+          };
+
+
+          checkoutPlan.textContent =
+            `${plan} PLAN`;
+
+
+          checkoutPrice.textContent =
+            `$${price}`;
+
+
+          orderIdEl.textContent =
+            orderId;
+
+
+          planCards.classList.add(
+            'hidden'
           );
 
-      }
-    );
 
-  });
+          sectionHead.classList.add(
+            'hidden'
+          );
+
+
+          checkout.classList.remove(
+            'hidden'
+          );
+
+
+          tg?.HapticFeedback
+            ?.impactOccurred(
+              'medium'
+            );
+
+        }
+      );
+
+    }
+  );
 
 
 /* =========================
    BACK BUTTON
 ========================= */
 
-backButton.addEventListener(
-  'click',
-  () => {
+if (backButton) {
 
-    checkout.classList.add(
-      'hidden'
-    );
+  backButton.addEventListener(
+    'click',
+    () => {
 
-    planCards.classList.remove(
-      'hidden'
-    );
+      checkout.classList.add(
+        'hidden'
+      );
 
-    sectionHead.classList.remove(
-      'hidden'
-    );
 
-  }
-);
+      planCards.classList.remove(
+        'hidden'
+      );
+
+
+      sectionHead.classList.remove(
+        'hidden'
+      );
+
+    }
+  );
+
+}
 
 
 /* =========================
    PAYMENT PAGE
 ========================= */
 
-payButton.addEventListener(
-  'click',
-  () => {
+if (payButton) {
 
-    if (!selectedOrder) {
-      return;
-    }
+  payButton.addEventListener(
+    'click',
+    () => {
 
-    const paymentPage =
-      'https://hehe-creator93.github.io/quotex-market-analyzer-ai/payment.html';
+      if (!selectedOrder) {
 
-    const params =
-      new URLSearchParams();
+        return;
 
-    params.set(
-      'order',
-      selectedOrder.orderId
-    );
-
-    params.set(
-      'plan',
-      selectedOrder.plan
-    );
-
-    params.set(
-      'amount',
-      selectedOrder.price
-    );
+      }
 
 
-    /*
-      Keep Telegram authentication
-      available on the payment page.
-    */
+      const paymentPage =
+        'https://hehe-creator93.github.io/quotex-market-analyzer-ai/payment.html';
 
-    if (tg?.initData) {
+
+      const params =
+        new URLSearchParams();
+
 
       params.set(
-        'tg_init_data',
-        tg.initData
+        'order',
+        selectedOrder.orderId
       );
 
-    }
-
-
-    if (
-      tg?.initDataUnsafe?.user?.id
-    ) {
 
       params.set(
-        'telegram_user_id',
-        String(
-          tg.initDataUnsafe.user.id
-        )
+        'plan',
+        selectedOrder.plan
       );
 
+
+      params.set(
+        'amount',
+        selectedOrder.price
+      );
+
+
+      /* =========================
+         TELEGRAM AUTH
+      ========================= */
+
+      if (tg?.initData) {
+
+        params.set(
+          'tg_init_data',
+          tg.initData
+        );
+
+      }
+
+
+      if (
+        tg?.initDataUnsafe?.user?.id
+      ) {
+
+        params.set(
+
+          'telegram_user_id',
+
+          String(
+            tg.initDataUnsafe.user.id
+          )
+
+        );
+
+      }
+
+
+      const url =
+        paymentPage +
+        '?' +
+        params.toString();
+
+
+      window.location.href =
+        url;
+
     }
+  );
 
-
-    const url =
-      paymentPage +
-      '?' +
-      params.toString();
-
-    window.location.href =
-      url;
-
-  }
-);
+}
 
 
 /* =========================
    ONLINE HEARTBEAT
 ========================= */
 
-setInterval(() => {
+setInterval(
+  () => {
 
-  const user =
-    tg?.initDataUnsafe?.user;
+    const user =
+      tg?.initDataUnsafe?.user;
 
-  if (!user) return;
 
-  fetch(
-    'https://kqshqlgprneqiuohjsyd.supabase.co/functions/v1/track_visitor',
-    {
-      method: 'POST',
+    if (!user) {
 
-      headers: {
-        'Content-Type':
-          'application/json'
-      },
+      return;
 
-      body: JSON.stringify({
-        telegram_user_id:
-          String(user.id),
-
-        username:
-          user.username || '',
-
-        first_name:
-          user.first_name || '',
-
-        last_name:
-          user.last_name || '',
-
-        new_visit:
-          false
-      })
     }
-  ).catch(() => {
-    // Heartbeat failure should
-    // not affect the Mini App.
-  });
 
-}, 60000);
+
+    fetch(
+
+      'https://kqshqlgprneqiuohjsyd.supabase.co/functions/v1/track_visitor',
+
+      {
+
+        method:
+          'POST',
+
+        headers: {
+
+          'Content-Type':
+            'application/json'
+
+        },
+
+        body:
+          JSON.stringify({
+
+            telegram_user_id:
+              String(
+                user.id
+              ),
+
+            username:
+              user.username ||
+              '',
+
+            first_name:
+              user.first_name ||
+              '',
+
+            last_name:
+              user.last_name ||
+              '',
+
+            new_visit:
+              false
+
+          })
+
+      }
+
+    ).catch(() => {
+
+      // Heartbeat failure should
+      // not affect the Mini App.
+
+    });
+
+  },
+
+  60000
+);
