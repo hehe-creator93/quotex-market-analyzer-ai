@@ -296,12 +296,13 @@ paidButton.onclick =
 
 
     /*
-       Real TRON TXID = 64 hexadecimal characters.
+       Real TRON TXID =
+       64 hexadecimal characters.
 
-       Binance off-chain references are NOT
-       TRON blockchain TXIDs.
+       Binance off-chain references
+       are NOT TRON blockchain TXIDs.
 
-       We therefore allow both formats here.
+       We therefore allow both formats.
     */
 
     const isTronTx =
@@ -432,6 +433,39 @@ paidButton.onclick =
 
         paidButton.disabled =
           true;
+
+
+        /* =========================
+           RETURN TO TELEGRAM
+        ========================= */
+
+        setTimeout(() => {
+
+          /*
+             Close the Telegram Mini App
+             after successful verification.
+          */
+
+          if (
+            window.Telegram &&
+            window.Telegram.WebApp
+          ) {
+
+            window.Telegram.WebApp.close();
+
+          } else {
+
+            /*
+               Fallback if opened
+               outside Telegram.
+            */
+
+            window.location.href =
+              'index.html';
+
+          }
+
+        }, 1500);
 
 
         return;
