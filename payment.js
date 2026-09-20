@@ -40,10 +40,9 @@ const amount =
   p.get('amount') || '60';
 
 
-/*
-   Telegram data was passed
-   from app.js.
-*/
+/* =========================
+   TELEGRAM DATA
+========================= */
 
 const telegramUserId =
   p.get('telegram_user_id') ||
@@ -160,7 +159,7 @@ document.getElementById(
 
 
 /* =========================
-   TXID INPUT
+   PAYMENT INPUT
 ========================= */
 
 const paidButton =
@@ -180,7 +179,7 @@ txBox.innerHTML = `
   <input
     id="txHash"
     type="text"
-    placeholder="Paste TRON Transaction ID (TXID)"
+    placeholder="Paste TRON TXID or Binance payment reference"
     autocomplete="off"
     style="
       width:100%;
@@ -193,6 +192,23 @@ txBox.innerHTML = `
       font-size:14px;
     "
   />
+
+  <div
+    style="
+      margin-top:8px;
+      font-size:12px;
+      line-height:1.5;
+      color:#aaa;
+    "
+  >
+    TRON payment:
+    paste the complete 64-character TXID.
+
+    <br>
+
+    Binance Off-Chain payment:
+    paste the Binance payment reference.
+  </div>
 
 `;
 
@@ -266,27 +282,47 @@ paidButton.onclick =
 
 
     /* =========================
-       TXID CHECK
+       PAYMENT REFERENCE CHECK
     ========================= */
 
     if (!txHash) {
 
       status.textContent =
-        '❌ Please paste your TRON transaction ID (TXID).';
+        '❌ Please enter your TRON TXID or Binance payment reference.';
 
       return;
 
     }
 
 
-    if (
-      !/^[a-fA-F0-9]{64}$/.test(
+    /*
+       Real TRON TXID = 64 hexadecimal characters.
+
+       Binance off-chain references are NOT
+       TRON blockchain TXIDs.
+
+       We therefore allow both formats here.
+    */
+
+    const isTronTx =
+      /^[a-fA-F0-9]{64}$/.test(
         txHash
-      )
+      );
+
+
+    const isBinanceReference =
+      /^(\d{6,20}|[A-Za-z0-9_-]{6,100})$/.test(
+        txHash
+      );
+
+
+    if (
+      !isTronTx &&
+      !isBinanceReference
     ) {
 
       status.textContent =
-        '❌ Invalid TXID. Please paste the complete TRON transaction ID.';
+        '❌ Invalid payment reference. Please check the TRON TXID or Binance payment reference.';
 
       return;
 
@@ -305,7 +341,9 @@ paidButton.onclick =
 
 
     status.textContent =
-      '🔎 Checking blockchain transaction...';
+      isTronTx
+        ? '🔎 Checking TRON blockchain transaction...'
+        : '🔎 Checking Binance payment reference...';
 
 
     /* =========================
@@ -347,7 +385,12 @@ paidButton.onclick =
                   telegramUserId,
 
                 telegram_init_data:
-                  telegramInitData
+                  telegramInitData,
+
+                payment_method:
+                  isTronTx
+                    ? 'TRON'
+                    : 'BINANCE_OFFCHAIN'
 
               })
 
@@ -389,12 +432,6 @@ paidButton.onclick =
 
         paidButton.disabled =
           true;
-
-
-        console.log(
-          'Payment verified:',
-          result
-        );
 
 
         return;
