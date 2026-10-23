@@ -1,54 +1,53 @@
-const SUPABASE_URL =
-  "https://kqshqlgprneqiuohjsyd.supabase.co";
+
+const SUPABASE_URL = "https://kqshqlgprneqiuohjsyd.supabase.co";
 
 const SUPABASE_ANON_KEY =
   "sb_publishable_3wg1TKCseDucRuDWBPvH9g_No6l3UJl";
 
-const FUNCTION_URL =
-  SUPABASE_URL +
-  "/functions/v1/admin_visitors";
+const VISITORS_FUNCTION =
+  `${SUPABASE_URL}/functions/v1/admin_visitors`;
 
-const totalVisitors =
-  document.getElementById("totalVisitors");
+const BROADCAST_FUNCTION =
+  `${SUPABASE_URL}/functions/v1/admin_broadcast`;
 
-const totalVisits =
-  document.getElementById("totalVisits");
-
-const lastVisitor =
-  document.getElementById("lastVisitor");
-
-const table =
-  document.getElementById("visitorTable");
-
-const status =
-  document.getElementById("status");
-
-const refreshButton =
-  document.getElementById("refreshButton");
+const $ = (id) => document.getElementById(id);
 
 let accessToken = "";
+let broadcastInProgress = false;
 
+const totalVisitors = $("totalVisitors");
+const totalVisits = $("totalVisits");
+const lastVisitor = $("lastVisitor");
+const table = $("visitorTable");
+const status = $("status");
+const refreshButton = $("refreshButton");
 
-/* =========================
-   LOGIN SCREEN
-========================= */
+const messageInput = $("broadcastMessage");
+const characterCount = $("broadcastCount");
+const previewButton = $("previewBroadcastButton");
+const previewBox = $("broadcastPreview");
+const previewText = $("broadcastPreviewText");
+const confirmCheckbox = $("confirmBroadcast");
+const sendButton = $("sendBroadcastButton");
+const broadcastStatus = $("broadcastStatus");
 
-const loginBox =
-  document.createElement("div");
+/* ---------- LOGIN SCREEN ---------- */
+
+const loginBox = document.createElement("div");
 
 loginBox.style.cssText = `
-  position: fixed;
-  inset: 0;
-  background: #050505;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  padding: 20px;
+  position:fixed;
+  inset:0;
+  background:#050505;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  padding:20px;
 `;
 
 loginBox.innerHTML = `
-  <div style="
+  <form id="adminLoginForm" style="
     width:100%;
     max-width:400px;
     background:#111;
@@ -56,435 +55,373 @@ loginBox.innerHTML = `
     border-radius:16px;
     padding:25px;
   ">
+    <h2 style="color:#d4af37;margin-top:0;">QMAI Admin Login</h2>
 
-    <h2 style="
-      color:#d4af37;
-      margin-top:0;
-    ">
-      QMAI Admin Login
-    </h2>
+    <input id="adminEmail" type="email"
+      autocomplete="username"
+      placeholder="Admin email" required
+      style="width:100%;padding:13px;margin:8px 0;
+      border-radius:8px;border:1px solid #333;
+      background:#080808;color:#fff;">
 
-    <input
-      id="adminEmail"
-      type="email"
-      placeholder="Admin email"
-      style="
-        width:100%;
-        padding:13px;
-        margin:8px 0;
-        border-radius:8px;
-        border:1px solid #333;
-        background:#080808;
-        color:#fff;
-      "
-    >
+    <input id="adminPassword" type="password"
+      autocomplete="current-password"
+      placeholder="Password" required
+      style="width:100%;padding:13px;margin:8px 0;
+      border-radius:8px;border:1px solid #333;
+      background:#080808;color:#fff;">
 
-    <input
-      id="adminPassword"
-      type="password"
-      placeholder="Password"
-      style="
-        width:100%;
-        padding:13px;
-        margin:8px 0;
-        border-radius:8px;
-        border:1px solid #333;
-        background:#080808;
-        color:#fff;
-      "
-    >
-
-    <button
-      id="adminLoginButton"
-      style="
-        width:100%;
-        margin-top:10px;
-        padding:13px;
-        background:#d4af37;
-        color:#000;
-        border:0;
-        border-radius:8px;
-        font-weight:bold;
-        cursor:pointer;
-      "
-    >
+    <button id="adminLoginButton" type="submit"
+      style="width:100%;margin-top:10px;padding:13px;">
       LOGIN
     </button>
 
-    <div
-      id="loginStatus"
-      style="
-        margin-top:12px;
-        color:#888;
-        font-size:13px;
-      "
-    ></div>
-
-  </div>
+    <div id="loginStatus"
+      style="margin-top:12px;color:#aaa;font-size:13px;"
+      role="status" aria-live="polite"></div>
+  </form>
 `;
 
 document.body.appendChild(loginBox);
 
+const loginForm = $("adminLoginForm");
+const emailInput = $("adminEmail");
+const passwordInput = $("adminPassword");
+const loginButton = $("adminLoginButton");
+const loginStatus = $("loginStatus");
 
-const emailInput =
-  document.getElementById("adminEmail");
+/* ---------- HELPERS ---------- */
 
-const passwordInput =
-  document.getElementById("adminPassword");
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (character) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[character]);
+}
 
-const loginButton =
-  document.getElementById("adminLoginButton");
+function formatDate(value) {
+  if (!value) return "—";
 
-const loginStatus =
-  document.getElementById("loginStatus");
+  const date = new Date(value);
 
+  if (Number.isNaN(date.getTime())) return "—";
 
-/* =========================
-   LOGIN
-========================= */
+  return date.toLocaleString("en-IN", {
+    dateStyle: "medium",
+    timeStyle: "short"
+  });
+}
 
-async function login() {
+async function readResponse(response) {
+  const text = await response.text();
 
-  const email =
-    emailInput.value.trim();
+  try {
+    return text ? JSON.parse(text) : {};
+  } catch {
+    return { error: text || "Unexpected server response" };
+  }
+}
 
-  const password =
-    passwordInput.value;
+/* ---------- LOGIN ---------- */
+
+loginForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
 
   if (!email || !password) {
-
-    loginStatus.textContent =
-      "Enter email and password.";
-
+    loginStatus.textContent = "Enter your email and password.";
     return;
   }
 
   loginButton.disabled = true;
-
-  loginStatus.textContent =
-    "Logging in...";
+  loginStatus.textContent = "Logging in...";
 
   try {
+    const response = await fetch(
+      `${SUPABASE_URL}/auth/v1/token?grant_type=password`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({ email, password })
+      }
+    );
 
-    const response =
-      await fetch(
-        SUPABASE_URL +
-        "/auth/v1/token?grant_type=password",
-        {
-          method: "POST",
+    const data = await readResponse(response);
 
-          headers: {
-            "Content-Type":
-              "application/json",
-
-            "apikey":
-              SUPABASE_ANON_KEY
-          },
-
-          body: JSON.stringify({
-            email,
-            password
-          })
-        }
-      );
-
-    const data =
-      await response.json();
-
-    if (!response.ok) {
-
+    if (!response.ok || !data.access_token) {
       throw new Error(
-        data.error_description ||
-        data.msg ||
-        "Login failed"
+        data.error_description || data.msg || data.message ||
+        "Login failed. Check your credentials."
       );
-
     }
 
-    accessToken =
-      data.access_token;
-
+    accessToken = data.access_token;
     loginBox.remove();
 
     await loadVisitors();
 
   } catch (error) {
-
-    loginStatus.textContent =
-      error.message;
-
+    loginStatus.textContent = error.message || "Login failed.";
+  } finally {
     loginButton.disabled = false;
-
   }
+});
 
-}
-
-
-loginButton.addEventListener(
-  "click",
-  login
-);
-
-
-passwordInput.addEventListener(
-  "keydown",
-  event => {
-
-    if (event.key === "Enter") {
-      login();
-    }
-
-  }
-);
-
-
-/* =========================
-   LOAD VISITORS
-========================= */
+/* ---------- LOAD VISITORS ---------- */
 
 async function loadVisitors() {
+  status.textContent = "Loading visitors...";
+  refreshButton.disabled = true;
 
-  status.textContent =
-    "Loading visitors...";
-
-  table.innerHTML = `
-    <tr>
-      <td colspan="7" class="empty">
-        Loading...
-      </td>
-    </tr>
-  `;
+  table.innerHTML =
+    '<tr><td colspan="7" class="empty">Loading...</td></tr>';
 
   try {
+    const response = await fetch(VISITORS_FUNCTION, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        apikey: SUPABASE_ANON_KEY
+      }
+    });
 
-    const response =
-      await fetch(
-        FUNCTION_URL,
-        {
-          headers: {
-            "Authorization":
-              `Bearer ${accessToken}`,
-
-            "apikey":
-              SUPABASE_ANON_KEY
-          }
-        }
-      );
-
-    const data =
-      await response.json();
+    const data = await readResponse(response);
 
     if (!response.ok || !data.ok) {
-
-      throw new Error(
-        data.error ||
-        "Failed to load visitors"
-      );
-
+      throw new Error(data.error || "Failed to load visitors.");
     }
 
-    const visitors =
-      data.visitors || [];
+    const visitors = Array.isArray(data.visitors) ? data.visitors : [];
 
-    totalVisitors.textContent =
-      visitors.length;
+    totalVisitors.textContent = visitors.length;
 
-    totalVisits.textContent =
-      visitors.reduce(
-        (total, visitor) =>
-          total +
-          Number(
-            visitor.visit_count || 0
-          ),
-        0
-      );
+    totalVisits.textContent = visitors.reduce(
+      (sum, visitor) => sum + Number(visitor.visit_count || 0),
+      0
+    );
 
-    if (visitors.length > 0) {
-
-      lastVisitor.textContent =
-        visitors[0].first_name ||
-        visitors[0].username ||
-        "Unknown";
-
-    } else {
-
-      lastVisitor.textContent =
-        "—";
-
-    }
-
+    lastVisitor.textContent = visitors.length
+      ? (
+          visitors[0].first_name ||
+          visitors[0].username ||
+          "Unknown"
+        )
+      : "—";
 
     if (!visitors.length) {
+      table.innerHTML =
+        '<tr><td colspan="7" class="empty">No visitors yet</td></tr>';
 
-      table.innerHTML = `
-        <tr>
-          <td colspan="7" class="empty">
-            No visitors yet
-          </td>
-        </tr>
-      `;
-
-      status.textContent =
-        "No visitors found.";
-
+      status.textContent = "No visitors found.";
       return;
     }
 
+    table.innerHTML = visitors.map((visitor) => {
+      const name = [
+        visitor.first_name,
+        visitor.last_name
+      ].filter(Boolean).join(" ") || "—";
 
-    table.innerHTML =
-      visitors.map(visitor => {
+      const username = visitor.username
+        ? "@" + visitor.username
+        : "—";
 
-        const name =
-          [
-            visitor.first_name,
-            visitor.last_name
-          ]
-          .filter(Boolean)
-          .join(" ") ||
-          "—";
+      const lastSeenTime = visitor.last_seen
+        ? new Date(visitor.last_seen).getTime()
+        : 0;
 
+      const isOnline =
+        lastSeenTime > 0 &&
+        Date.now() - lastSeenTime <= 2 * 60 * 1000;
 
-        const username =
-          visitor.username
-            ? "@" + visitor.username
-            : "—";
+      const visitorStatus = isOnline
+        ? '<span class="online"><span class="dot-online"></span>Online</span>'
+        : '<span class="offline"><span class="dot-offline"></span>Offline</span>';
 
+      return `
+        <tr>
+          <td>${escapeHTML(name)}</td>
+          <td>${escapeHTML(username)}</td>
+          <td>${escapeHTML(visitor.telegram_user_id || "—")}</td>
+          <td>${visitorStatus}</td>
+          <td>${escapeHTML(visitor.visit_count || 0)}</td>
+          <td>${escapeHTML(formatDate(visitor.first_seen))}</td>
+          <td>${escapeHTML(formatDate(visitor.last_seen))}</td>
+        </tr>
+      `;
+    }).join("");
 
-        /* =========================
-           ONLINE CHECK
-        ========================= */
-
-        const lastSeen =
-          visitor.last_seen
-            ? new Date(
-                visitor.last_seen
-              ).getTime()
-            : 0;
-
-        const now =
-          Date.now();
-
-        const difference =
-          now - lastSeen;
-
-        const isOnline =
-          difference <=
-          2 * 60 * 1000;
-
-
-        const statusHtml =
-          isOnline
-            ? `
-              <span class="online">
-                <span class="dot-online"></span>
-                Online
-              </span>
-            `
-            : `
-              <span class="offline">
-                <span class="dot-offline"></span>
-                Offline
-              </span>
-            `;
-
-
-        return `
-          <tr>
-
-            <td>
-              ${name}
-            </td>
-
-            <td>
-              ${username}
-            </td>
-
-            <td>
-              ${visitor.telegram_user_id || "—"}
-            </td>
-
-            <td>
-              ${statusHtml}
-            </td>
-
-            <td>
-              ${visitor.visit_count || 0}
-            </td>
-
-            <td>
-              ${formatDate(
-                visitor.first_seen
-              )}
-            </td>
-
-            <td>
-              ${formatDate(
-                visitor.last_seen
-              )}
-            </td>
-
-          </tr>
-        `;
-
-      }).join("");
-
-
-    status.textContent =
-      `Showing ${visitors.length} visitor(s).`;
+    status.textContent = `Showing ${visitors.length} visitor(s).`;
 
   } catch (error) {
+    console.error("Visitor loading failed:", error);
 
-    console.error(error);
+    table.innerHTML =
+      '<tr><td colspan="7" class="empty">Unable to load visitors</td></tr>';
 
-    table.innerHTML = `
-      <tr>
-        <td colspan="7" class="empty">
-          Unable to load visitors
-        </td>
-      </tr>
-    `;
-
-    status.textContent =
-      error.message;
-
+    status.textContent = error.message || "Unable to load visitors.";
+  } finally {
+    refreshButton.disabled = false;
   }
-
 }
 
+refreshButton.addEventListener("click", () => {
+  if (accessToken) loadVisitors();
+});
 
-/* =========================
-   DATE FORMAT
-========================= */
+/* ---------- BROADCAST MESSAGE ---------- */
 
-function formatDate(value) {
-
-  if (!value) {
-    return "—";
-  }
-
-  return new Date(value)
-    .toLocaleString(
-      "en-IN",
-      {
-        dateStyle: "medium",
-        timeStyle: "short"
-      }
-    );
-
+function updateCharacterCount() {
+  characterCount.textContent =
+    `${messageInput.value.length} / 4096 characters`;
 }
 
+messageInput.addEventListener("input", () => {
+  updateCharacterCount();
 
-/* =========================
-   REFRESH
-========================= */
+  // Any message edit requires a fresh preview and confirmation.
+  previewBox.style.display = "none";
+  confirmCheckbox.checked = false;
+  sendButton.disabled = true;
+  broadcastStatus.textContent = "";
+});
 
-refreshButton.addEventListener(
-  "click",
-  () => {
+previewButton.addEventListener("click", () => {
+  const message = messageInput.value.trim();
 
-    if (accessToken) {
-      loadVisitors();
+  if (!message) {
+    broadcastStatus.textContent = "Please enter a message first.";
+    messageInput.focus();
+    return;
+  }
+
+  if (message.length > 4096) {
+    broadcastStatus.textContent =
+      "The message exceeds Telegram's 4096-character limit.";
+    return;
+  }
+
+  previewText.textContent = message;
+  previewBox.style.display = "block";
+  confirmCheckbox.checked = false;
+  sendButton.disabled = true;
+
+  broadcastStatus.textContent =
+    "Review the preview. Confirm only when you are ready to send.";
+});
+
+confirmCheckbox.addEventListener("change", () => {
+  sendButton.disabled =
+    !confirmCheckbox.checked || broadcastInProgress;
+});
+
+/* ---------- SEND BROADCAST ---------- */
+
+sendButton.addEventListener("click", async () => {
+  if (broadcastInProgress) return;
+
+  const message = messageInput.value.trim();
+
+  if (!accessToken) {
+    broadcastStatus.textContent = "Please log in again.";
+    return;
+  }
+
+  if (!message) {
+    broadcastStatus.textContent = "Please enter a message.";
+    return;
+  }
+
+  if (!confirmCheckbox.checked) {
+    broadcastStatus.textContent =
+      "Please confirm the message before sending.";
+    return;
+  }
+
+  const approved = window.confirm(
+    "Send this message to all recorded Telegram visitors now?\n\n" +
+    "This action cannot be undone."
+  );
+
+  if (!approved) return;
+
+  broadcastInProgress = true;
+  sendButton.disabled = true;
+  previewButton.disabled = true;
+  messageInput.disabled = true;
+  broadcastStatus.textContent = "Sending messages. Please wait...";
+
+  try {
+    const response = await fetch(BROADCAST_FUNCTION, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        apikey: SUPABASE_ANON_KEY
+      },
+      body: JSON.stringify({ message })
+    });
+
+    const data = await readResponse(response);
+
+    if (!response.ok || !data.ok) {
+      throw new Error(data.error || "Broadcast request failed.");
     }
 
+    broadcastStatus.textContent =
+      "Broadcast request finished.\n" +
+      `Total recipients: ${data.total ?? 0}\n` +
+      `Sent successfully: ${data.sent ?? 0}\n` +
+      `Failed: ${data.failed ?? 0}`;
+
+    if (Array.isArray(data.results) && data.results.length) {
+      const failedResults = data.results.filter((item) => !item.ok);
+
+      if (failedResults.length) {
+        broadcastStatus.textContent +=
+          "\n\nFailed deliveries:\n" +
+          failedResults.slice(0, 20).map((item) =>
+            `User ${item.userId}: ${item.error || "Delivery failed"}`
+          ).join("\n");
+
+        if (failedResults.length > 20) {
+          broadcastStatus.textContent +=
+            `\n...and ${failedResults.length - 20} more failure(s).`;
+        }
+      }
+    }
+
+    if ((data.sent ?? 0) > 0) {
+      broadcastStatus.textContent +=
+        "\n\nTelegram accepted the successful messages.";
+    }
+
+    // Require a fresh preview and confirmation for another broadcast.
+    confirmCheckbox.checked = false;
+    previewBox.style.display = "none";
+
+  } catch (error) {
+    console.error("Broadcast failed:", error);
+
+    broadcastStatus.textContent =
+      `Broadcast error: ${error.message || "Please try again."}\n` +
+      "Check the Supabase Edge Function logs before retrying, " +
+      "so you don't accidentally send duplicate messages.";
+
+  } finally {
+    broadcastInProgress = false;
+    messageInput.disabled = false;
+    previewButton.disabled = false;
+    sendButton.disabled = !confirmCheckbox.checked;
   }
-);
+});
+
+updateCharacterCount();
+
