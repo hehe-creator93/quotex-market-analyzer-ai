@@ -1,15 +1,14 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <meta name="theme-color" content="#050505">
   <title>QMAI Admin</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -32,8 +31,7 @@
 
     .subtitle {
       color: #888;
-      margin-top: 6px;
-      margin-bottom: 25px;
+      margin: 6px 0 25px;
     }
 
     .stats {
@@ -43,12 +41,13 @@
       margin-bottom: 25px;
     }
 
-    .stat {
-      background: #111;
+    .stat, .card {
+      background: #0d0d0d;
       border: 1px solid #292929;
       border-radius: 14px;
-      padding: 20px;
     }
+
+    .stat { padding: 20px; }
 
     .stat-title {
       color: #888;
@@ -60,13 +59,12 @@
       font-size: 28px;
       font-weight: bold;
       margin-top: 8px;
+      overflow-wrap: anywhere;
     }
 
     .card {
-      background: #0d0d0d;
-      border: 1px solid #292929;
-      border-radius: 14px;
       overflow: hidden;
+      margin-bottom: 25px;
     }
 
     .card-header {
@@ -75,6 +73,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
     }
 
     .card-header h2 {
@@ -86,19 +85,20 @@
       background: #d4af37;
       border: none;
       color: #000;
-      padding: 9px 16px;
+      padding: 10px 16px;
       border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
     }
 
-    button:hover {
-      opacity: 0.9;
+    button:hover:not(:disabled) { opacity: .9; }
+
+    button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
     }
 
-    .table-wrap {
-      overflow-x: auto;
-    }
+    .table-wrap { overflow-x: auto; }
 
     table {
       width: 100%;
@@ -106,8 +106,7 @@
       min-width: 800px;
     }
 
-    th,
-    td {
+    th, td {
       padding: 14px;
       text-align: left;
       border-bottom: 1px solid #222;
@@ -119,9 +118,7 @@
       background: #111;
     }
 
-    td {
-      color: #ddd;
-    }
+    td { color: #ddd; }
 
     .online {
       display: inline-flex;
@@ -139,21 +136,15 @@
       font-weight: bold;
     }
 
-    .dot-online,
-    .dot-offline {
+    .dot-online, .dot-offline {
       width: 8px;
       height: 8px;
       border-radius: 50%;
       display: inline-block;
     }
 
-    .dot-online {
-      background: #4ade80;
-    }
-
-    .dot-offline {
-      background: #666;
-    }
+    .dot-online { background: #4ade80; }
+    .dot-offline { background: #666; }
 
     .empty {
       text-align: center;
@@ -165,80 +156,153 @@
       margin-top: 15px;
       color: #888;
       font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .broadcast-body { padding: 20px; }
+
+    .help-text {
+      color: #999;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-top: 0;
+    }
+
+    label.field-label {
+      display: block;
+      margin: 16px 0 8px;
+      color: #d4af37;
+      font-weight: bold;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      padding: 14px;
+      background: #080808;
+      color: #fff;
+      border: 1px solid #333;
+      border-radius: 8px;
+      resize: vertical;
+      font: 14px Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    textarea:focus {
+      outline: 1px solid #d4af37;
+      border-color: #d4af37;
+    }
+
+    .counter {
+      color: #888;
+      font-size: 12px;
+      margin-top: 6px;
+      text-align: right;
+    }
+
+    .warning {
+      margin-top: 16px;
+      padding: 14px;
+      background: #17130a;
+      border: 1px solid #51431c;
+      border-radius: 8px;
+      color: #d8c88d;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .preview {
+      display: none;
+      margin-top: 20px;
+      padding: 16px;
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 10px;
+    }
+
+    .preview h3 {
+      color: #d4af37;
+      margin-top: 0;
+    }
+
+    #broadcastPreviewText {
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      line-height: 1.7;
+    }
+
+    .confirm-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 18px;
+      color: #ddd;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .confirm-label input {
+      margin-top: 4px;
+      accent-color: #d4af37;
+    }
+
+    #broadcastStatus {
+      margin-top: 16px;
+      color: #aaa;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      line-height: 1.7;
+      font-size: 14px;
     }
 
     @media (max-width: 700px) {
-      .stats {
-        grid-template-columns: 1fr;
-      }
-
-      h1 {
-        font-size: 24px;
-      }
+      .stats { grid-template-columns: 1fr; }
+      h1 { font-size: 24px; }
+      .container { padding: 20px 12px; }
+      .card-header { padding: 14px; }
     }
   </style>
 </head>
 
 <body>
-
   <div class="container">
 
     <h1>QUOTEX MARKET ANALYZER AI</h1>
-
-    <div class="subtitle">
-      Admin • Visitor Dashboard
-    </div>
+    <div class="subtitle">Admin • Visitor Dashboard</div>
 
     <div class="stats">
-
       <div class="stat">
-        <div class="stat-title">
-          Total Visitors
-        </div>
-
-        <div class="stat-value" id="totalVisitors">
-          0
-        </div>
+        <div class="stat-title">Total Visitors</div>
+        <div class="stat-value" id="totalVisitors">0</div>
       </div>
 
       <div class="stat">
-        <div class="stat-title">
-          Total Visits
-        </div>
-
-        <div class="stat-value" id="totalVisits">
-          0
-        </div>
+        <div class="stat-title">Total Visits</div>
+        <div class="stat-value" id="totalVisits">0</div>
       </div>
 
       <div class="stat">
-        <div class="stat-title">
-          Last Visitor
-        </div>
-
-        <div class="stat-value" id="lastVisitor">
-          —
-        </div>
+        <div class="stat-title">Last Visitor</div>
+        <div class="stat-value" id="lastVisitor">—</div>
       </div>
-
     </div>
 
+    <!-- VISITORS -->
     <div class="card">
-
       <div class="card-header">
-
         <h2>Visitors</h2>
-
-        <button id="refreshButton">
-          Refresh
-        </button>
-
+        <button type="button" id="refreshButton">Refresh</button>
       </div>
 
       <div class="table-wrap">
-
         <table>
-
           <thead>
             <tr>
               <th>Name</th>
@@ -252,28 +316,80 @@
           </thead>
 
           <tbody id="visitorTable">
-
             <tr>
-              <td colspan="7" class="empty">
-                Loading...
-              </td>
+              <td colspan="7" class="empty">Loading...</td>
             </tr>
-
           </tbody>
-
         </table>
+      </div>
+    </div>
 
+    <!-- BROADCAST OFFERS -->
+    <div class="card">
+      <div class="card-header">
+        <h2>📢 Broadcast Offers</h2>
       </div>
 
+      <div class="broadcast-body">
+        <p class="help-text">
+          Compose an offer or update for recorded Telegram visitors.
+          Review the message before confirming a broadcast.
+        </p>
+
+        <label class="field-label" for="broadcastMessage">
+          Broadcast Message
+        </label>
+
+        <textarea
+          id="broadcastMessage"
+          maxlength="4096"
+          placeholder="🔥 QMAI Special Offer!
+
+Our subscription offer is available now.
+
+Contact us for details."
+        ></textarea>
+
+        <div class="counter" id="broadcastCount">0 / 4096 characters</div>
+
+        <div class="warning">
+          ⚠️ Telegram cannot deliver private messages to users who have
+          never started your bot or who have blocked it. Send relevant
+          updates only to people who expect to receive them.
+        </div>
+
+        <div class="button-row">
+          <button type="button" id="previewBroadcastButton">
+            Preview Message
+          </button>
+        </div>
+
+        <div class="preview" id="broadcastPreview">
+          <h3>Message Preview</h3>
+          <div id="broadcastPreviewText"></div>
+
+          <label class="confirm-label">
+            <input type="checkbox" id="confirmBroadcast">
+            <span>
+              I have reviewed this message and confirm that I want to send
+              it to all recorded Telegram visitors.
+            </span>
+          </label>
+
+          <div class="button-row">
+            <button type="button" id="sendBroadcastButton" disabled>
+              Send Broadcast
+            </button>
+          </div>
+        </div>
+
+        <div id="broadcastStatus" role="status" aria-live="polite"></div>
+      </div>
     </div>
 
-    <div class="status" id="status">
-      Dashboard ready
-    </div>
-
+    <div class="status" id="status">Dashboard ready</div>
   </div>
 
   <script src="admin.js"></script>
-
 </body>
 </html>
