@@ -247,8 +247,8 @@ sendButton.addEventListener("click", async () => {
     return;
   }
 
-  if (!window.confirm(
-    "Send this message to all recorded Telegram visitors?\n\nThis cannot be undone."
+ if (!window.confirm(
+    "Send a TEST message only to your configured Telegram test account?\n\nNo visitors will receive this message."
   )) {
     return;
   }
