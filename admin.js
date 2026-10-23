@@ -1,5 +1,4 @@
 
-
 const SUPABASE_URL = "https://kqshqlgprneqiuohjsyd.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_3wg1TKCseDucRuDWBPvH9g_No6l3UJl";
 
@@ -43,6 +42,7 @@ function escapeHTML(value) {
 
 async function readResponse(response) {
   const text = await response.text();
+
   try {
     return text ? JSON.parse(text) : {};
   } catch {
@@ -52,8 +52,11 @@ async function readResponse(response) {
 
 function formatDate(value) {
   if (!value) return "—";
+
   const date = new Date(value);
+
   if (Number.isNaN(date.getTime())) return "—";
+
   return date.toLocaleString("en-IN", {
     dateStyle: "medium",
     timeStyle: "short"
@@ -64,6 +67,7 @@ function formatDate(value) {
 
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+
   loginButton.disabled = true;
   loginStatus.textContent = "Logging in...";
 
@@ -86,11 +90,14 @@ loginForm.addEventListener("submit", async (event) => {
     const data = await readResponse(response);
 
     if (!response.ok || !data.access_token) {
-      throw new Error(data.error_description || data.msg || "Login failed");
+      throw new Error(
+        data.error_description || data.msg || "Login failed"
+      );
     }
 
     accessToken = data.access_token;
     loginBox.remove();
+
     await loadVisitors();
 
   } catch (error) {
@@ -126,12 +133,17 @@ async function loadVisitors() {
       throw new Error(data.error || "Failed to load visitors");
     }
 
-    const visitors = Array.isArray(data.visitors) ? data.visitors : [];
+    const visitors = Array.isArray(data.visitors)
+      ? data.visitors
+      : [];
 
     $("totalVisitors").textContent = visitors.length;
+
     $("totalVisits").textContent = visitors.reduce(
-      (sum, v) => sum + Number(v.visit_count || 0), 0
+      (sum, visitor) => sum + Number(visitor.visit_count || 0),
+      0
     );
+
     $("lastVisitor").textContent = visitors.length
       ? visitors[0].first_name || visitors[0].username || "Unknown"
       : "—";
@@ -139,15 +151,27 @@ async function loadVisitors() {
     if (!visitors.length) {
       table.innerHTML =
         '<tr><td colspan="7" class="empty">No visitors yet</td></tr>';
+
       status.textContent = "No visitors found.";
       return;
     }
 
-    table.innerHTML = visitors.map((v) => {
-      const name = [v.first_name, v.last_name].filter(Boolean).join(" ") || "—";
-      const username = v.username ? "@" + v.username : "—";
-      const lastSeen = v.last_seen ? new Date(v.last_seen).getTime() : 0;
-      const online = lastSeen > 0 && Date.now() - lastSeen <= 120000;
+    table.innerHTML = visitors.map((visitor) => {
+      const name =
+        [visitor.first_name, visitor.last_name]
+          .filter(Boolean)
+          .join(" ") || "—";
+
+      const username = visitor.username
+        ? "@" + visitor.username
+        : "—";
+
+      const lastSeen = visitor.last_seen
+        ? new Date(visitor.last_seen).getTime()
+        : 0;
+
+      const online =
+        lastSeen > 0 && Date.now() - lastSeen <= 120000;
 
       const state = online
         ? '<span class="online"><span class="dot-online"></span>Online</span>'
@@ -156,11 +180,11 @@ async function loadVisitors() {
       return `<tr>
         <td>${escapeHTML(name)}</td>
         <td>${escapeHTML(username)}</td>
-        <td>${escapeHTML(v.telegram_user_id || "—")}</td>
+        <td>${escapeHTML(visitor.telegram_user_id || "—")}</td>
         <td>${state}</td>
-        <td>${escapeHTML(v.visit_count || 0)}</td>
-        <td>${escapeHTML(formatDate(v.first_seen))}</td>
-        <td>${escapeHTML(formatDate(v.last_seen))}</td>
+        <td>${escapeHTML(visitor.visit_count || 0)}</td>
+        <td>${escapeHTML(formatDate(visitor.first_seen))}</td>
+        <td>${escapeHTML(formatDate(visitor.last_seen))}</td>
       </tr>`;
     }).join("");
 
@@ -169,7 +193,10 @@ async function loadVisitors() {
   } catch (error) {
     table.innerHTML =
       '<tr><td colspan="7" class="empty">Unable to load visitors</td></tr>';
-    status.textContent = error.message || "Unable to load visitors";
+
+    status.textContent =
+      error.message || "Unable to load visitors";
+
   } finally {
     refresh.disabled = false;
   }
@@ -179,7 +206,7 @@ $("refreshButton").addEventListener("click", () => {
   if (accessToken) loadVisitors();
 });
 
-/* BROADCAST ELEMENTS */
+/* TEST MESSAGE ELEMENTS */
 
 const messageInput = $("broadcastMessage");
 const characterCount = $("broadcastCount");
@@ -190,7 +217,7 @@ const confirmCheckbox = $("confirmBroadcast");
 const sendButton = $("sendBroadcastButton");
 const broadcastStatus = $("broadcastStatus");
 
-/* Update counter immediately and whenever text changes. */
+/* CHARACTER COUNTER */
 
 function updateCharacterCount() {
   characterCount.textContent =
@@ -199,19 +226,22 @@ function updateCharacterCount() {
 
 messageInput.addEventListener("input", () => {
   updateCharacterCount();
+
   previewBox.style.display = "none";
   confirmCheckbox.checked = false;
   sendButton.disabled = true;
   broadcastStatus.textContent = "";
 });
 
-/* Preview */
+/* PREVIEW */
 
 previewButton.addEventListener("click", () => {
   const message = messageInput.value.trim();
 
   if (!message) {
-    broadcastStatus.textContent = "Please enter a message first.";
+    broadcastStatus.textContent =
+      "Please enter a message first.";
+
     messageInput.focus();
     return;
   }
@@ -223,19 +253,21 @@ previewButton.addEventListener("click", () => {
 
   previewText.textContent = message;
   previewBox.style.display = "block";
+
   confirmCheckbox.checked = false;
   sendButton.disabled = true;
+
   broadcastStatus.textContent =
-    "Review the message and tick the confirmation box to continue.";
+    "Review the message and tick the checkbox to send a TEST to your configured test account only.";
 });
 
-/* Confirmation */
+/* CHECKBOX */
 
 confirmCheckbox.addEventListener("change", () => {
   sendButton.disabled = !confirmCheckbox.checked || sending;
 });
 
-/* Send */
+/* SEND TEST MESSAGE ONLY */
 
 sendButton.addEventListener("click", async () => {
   if (sending || !confirmCheckbox.checked) return;
@@ -243,21 +275,30 @@ sendButton.addEventListener("click", async () => {
   const message = messageInput.value.trim();
 
   if (!accessToken || !message) {
-    broadcastStatus.textContent = "Please log in and enter a message.";
+    broadcastStatus.textContent =
+      "Please log in and enter a message.";
+
     return;
   }
 
- if (!window.confirm(
-    "Send a TEST message only to your configured Telegram test account?\n\nNo visitors will receive this message."
-  )) {
+  if (message.length > 4096) {
+    broadcastStatus.textContent = "Message is too long.";
     return;
   }
+
+  const confirmed = window.confirm(
+    "Send a TEST message only to your configured Telegram test account?\n\nNo visitors will receive this message."
+  );
+
+  if (!confirmed) return;
 
   sending = true;
   sendButton.disabled = true;
   previewButton.disabled = true;
   messageInput.disabled = true;
-  broadcastStatus.textContent = "Sending messages. Please wait...";
+
+  broadcastStatus.textContent =
+    "Sending test message to the configured test account...";
 
   try {
     const response = await fetch(BROADCAST_FUNCTION, {
@@ -267,39 +308,31 @@ sendButton.addEventListener("click", async () => {
         Authorization: `Bearer ${accessToken}`,
         apikey: SUPABASE_ANON_KEY
       },
-      body: JSON.stringify({   message,   mode: "test" })
+      body: JSON.stringify({
+        message,
+        mode: "test"
+      })
     });
 
     const data = await readResponse(response);
 
     if (!response.ok || !data.ok) {
-      throw new Error(data.error || "Broadcast failed");
+      throw new Error(
+        data.error || "Test message failed"
+      );
     }
 
     broadcastStatus.textContent =
-      `Broadcast completed.\n` +
-      `Total recipients: ${data.total ?? 0}\n` +
-      `Sent successfully: ${data.sent ?? 0}\n` +
-      `Failed: ${data.failed ?? 0}`;
-
-    if (Array.isArray(data.results)) {
-      const failures = data.results.filter((r) => !r.ok);
-
-      if (failures.length) {
-        broadcastStatus.textContent += "\n\nFailed deliveries:\n" +
-          failures.slice(0, 20).map((r) =>
-            `User ${r.userId}: ${r.error || "Delivery failed"}`
-          ).join("\n");
-      }
-    }
+      "Success! The test message was delivered to the configured Telegram test account.";
 
     previewBox.style.display = "none";
     confirmCheckbox.checked = false;
 
   } catch (error) {
     broadcastStatus.textContent =
-      `Error: ${error.message || "Broadcast failed"}\n` +
-      "Check Supabase function logs before retrying to avoid duplicate messages.";
+      `Test failed: ${error.message || "Unknown error"}.\n` +
+      "Check the Supabase admin_broadcast function logs before trying again.";
+
   } finally {
     sending = false;
     messageInput.disabled = false;
@@ -308,7 +341,8 @@ sendButton.addEventListener("click", async () => {
   }
 });
 
-/* INITIALIZE COUNTER */
+/* INITIALIZE */
 
 updateCharacterCount();
+
 
