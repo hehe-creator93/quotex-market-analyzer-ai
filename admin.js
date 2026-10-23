@@ -267,7 +267,7 @@ sendButton.addEventListener("click", async () => {
         Authorization: `Bearer ${accessToken}`,
         apikey: SUPABASE_ANON_KEY
       },
-      body: JSON.stringify({ message })
+      body: JSON.stringify({   message,   mode: "test" })
     });
 
     const data = await readResponse(response);
