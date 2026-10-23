@@ -235,13 +235,19 @@ messageInput.addEventListener("input", () => {
 
 /* PREVIEW */
 
-previewButton.addEventListener("click", () => {
+
+/* PREVIEW — SAVE A SERVER-SIDE PREVIEW; SEND NOTHING */
+
+previewButton.addEventListener("click", async () => {
   const message = messageInput.value.trim();
 
-  if (!message) {
-    broadcastStatus.textContent =
-      "Please enter a message first.";
+  if (!accessToken) {
+    broadcastStatus.textContent = "Please log in again.";
+    return;
+  }
 
+  if (!message) {
+    broadcastStatus.textContent = "Please enter a message first.";
     messageInput.focus();
     return;
   }
@@ -251,15 +257,58 @@ previewButton.addEventListener("click", () => {
     return;
   }
 
-  previewText.textContent = message;
-  previewBox.style.display = "block";
-
-  confirmCheckbox.checked = false;
+  previewButton.disabled = true;
   sendButton.disabled = true;
-
+  confirmCheckbox.checked = false;
+  previewBox.style.display = "none";
   broadcastStatus.textContent =
-    "Review the message and tick the checkbox to send a TEST to your configured test account only.";
+    "Creating preview for visitors active in the last 30 days...";
+
+  try {
+    const response = await fetch(BROADCAST_FUNCTION, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+        apikey: SUPABASE_ANON_KEY
+      },
+      body: JSON.stringify({
+        mode: "preview",
+        message
+      })
+    });
+
+    const data = await readResponse(response);
+
+    if (!response.ok || !data.ok) {
+      throw new Error(
+        data.error || `Preview failed (HTTP ${response.status})`
+      );
+    }
+
+    previewText.textContent = message;
+    previewBox.style.display = "block";
+
+    broadcastStatus.textContent =
+      `Preview saved successfully.\n` +
+      `Preview ID: ${data.job_id}\n` +
+      `Eligible unique visitor IDs: ${data.recipient_count}\n` +
+      `Invalid or missing IDs: ${data.invalid_or_missing_ids}\n` +
+      `Messages sent: ${data.sent}\n\n` +
+      "No visitor messages were sent. Real broadcasting is not enabled.";
+
+  } catch (error) {
+    broadcastStatus.textContent =
+      `Preview failed: ${error.message || "Unknown error"}.\n` +
+      "Check the Supabase admin_broadcast function logs.";
+
+  } finally {
+    previewButton.disabled = false;
+    confirmCheckbox.checked = false;
+    sendButton.disabled = true;
+  }
 });
+
 
 /* CHECKBOX */
 
